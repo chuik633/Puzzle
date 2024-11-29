@@ -1,0 +1,102 @@
+*{
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+    color: #2225D8 !important;
+}
+body{
+    display: flex;
+    width: 100vw;
+    height: fit-content;
+    flex-direction: row;
+    gap: 20px;
+    background-color: #F7F7F0;
+    overflow-y: auto;
+
+}
+
+.header{
+    position: fixed;
+    background-color: #F7F7F0;
+    right: 0px;
+    top: 0px;
+    width: 100vw;
+    height: fit-content;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 1px solid #2225D8;
+}
+
+.title{
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #2225D8;
+}
+
+#sidebar{
+    width: 300px;
+    height: 100%;
+    border-right: 1px solid #2225D8;
+}
+
+
+.legend-container{
+    padding: 10px;
+    padding-top: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+   
+}
+
+#app{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+    padding: 20px;
+    padding-top: 230px;
+    align-items: center;
+}
+.plot-container{
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.face{
+    z-index: 3;
+    min-width: 100px;
+    min-height: 100px;
+    position: relative;
+    padding: 10px;
+}
+.legend-text{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    pointer-events: none;
+}
+
+canvas{
+    position: relative;
+    pointer-events: none;
+}
+text{
+    fill: #2225D8 !important;
+}
+
+.tick{
+    fill:#2225D8 ;
+}
+.domain, line{
+    stroke:#2225D8 ;
+}
+h2{
+    color: #2225D8;
+}
