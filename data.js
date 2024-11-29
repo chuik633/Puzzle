@@ -1,5 +1,6 @@
 
-let data = await d3.csv('/data/data.csv')
+// let data = await d3.csv('data/data.csv')
+let data = await d3.csv('data/data.csv')
 data = data.map(d=>{
     let time_min =  parseInt(d.time.trim().split(':')[0])
     let time_sec = parseInt(d.time.trim().split(':')[1])
@@ -102,6 +103,8 @@ function layoutSinglePuzzle(puzzleName){
             return line(d[1])
         })
         .on('mouseover', (event,d)=>{
+            d3.selectAll('.face').style('background','none').style('border', 'none')
+            d3.select('.face-'+d.puzzler_name).style('background',colorScale(d.puzzler_name)).style('border', '1px solid #2225D8')
             d3.selectAll(`.${d[1][0].puzzle_name_id}`).style('opacity', .3)
             d3.selectAll(`.${d[1][0].puzzle_name_id}-${d[0]}`).style('opacity', 1)
         })

@@ -85,7 +85,7 @@ body{
 
 canvas{
     position: relative;
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 text{
     fill: #2225D8 !important;
