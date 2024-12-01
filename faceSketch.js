@@ -18,7 +18,12 @@ function showFaces(){
         }
         
         if(puzzler_names.includes(name)){
-            new p5((p) => sketchFace(p, name, faceElement));
+            if(!faceElement.classList.contains('displayed')){
+                new p5((p) => sketchFace(p, name, faceElement));
+                faceElement.classList.add('displayed');
+            }
+           
+            
         }
     
     });

@@ -2,6 +2,7 @@
     box-sizing: border-box;
     font-family: 'Courier New', Courier, monospace;
     color: #2225D8 !important;
+    margin:0px;
 }
 body{
     display: flex;
@@ -47,18 +48,22 @@ body{
     display: flex;
     flex-direction: row;
     gap: 20px;
+    overflow-x:auto;
    
 }
 
 #app{
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 100vw;
     height: 100%;
     gap: 20px;
     padding: 20px;
     padding-top: 230px;
     align-items: center;
+    overflow:hidden;
+    
+    left: 0px;
 }
 .plot-container{
     align-self: center;
@@ -66,15 +71,27 @@ body{
     flex-direction: row;
     gap: 15px;
     flex-wrap: wrap;
+    overflow-y: auto;
+    overflow-x:hidden;
 }
 
-.face{
+.plot-container .face{
+    z-index: 3;
+    /* min-width: 100px;
+    min-height: 100px; */
+    position: relative;
+    /* padding: 10px; */
+}
+.legend-container .face{
     z-index: 3;
     min-width: 100px;
     min-height: 100px;
     position: relative;
     padding: 10px;
+
 }
+
+
 .legend-text{
     display: flex;
     justify-content: center;

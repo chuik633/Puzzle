@@ -1,5 +1,6 @@
 
 // let data = await d3.csv('data/data.csv')
+//3.96 seconds per piece
 let data = await d3.csv('data/data.csv')
 data = data.map(d=>{
     let time_min =  parseInt(d.time.trim().split(':')[0])
@@ -29,54 +30,69 @@ const width = (window.innerWidth-20*4)/2
 const height =  width
 
 
-for(const puzzleName of Object.keys(group_puzzle)){
-    if(puzzleName != ""){
-        layoutSinglePuzzle(puzzleName)
-    }
+// for(const puzzleName of Object.keys(group_puzzle)){
+//     if(puzzleName != ""){
+//         layoutHighScores(puzzleName)
+//     }
     
-}
-const header = app.append('div').attr('class', 'header')
-header.append('div').attr('class', 'title').text('Puzzle Race')
-const legendSize = 20
-const legend = header.append('div').attr('class', 'legend-container')
-legend.selectAll('div')
-    .data(puzzler_names)
-    .enter().append('div')
-    .attr('width', legendSize)
-    .attr('height', legendSize)
-    .attr('class', d=> 'face face-'+ d)
-    .on('mouseover', (event, d)=> {
-        d3.selectAll('.face').style('background','none').style('border', 'none')
-        d3.select('.face-'+d).style('background',colorScale(d)).style('border', '1px solid #2225D8')
-        for(const name of puzzler_names){
-            d3.selectAll('.'+name).attr('opacity',.3)
-            d3.selectAll('circle.'+name).attr('stroke',"none")
-        }
-        d3.selectAll('.'+d).attr('opacity',1)
-        d3.selectAll('circle.'+d).attr('stroke',"#2225D8")
-    })
-    .on('mouseleave', (event, d)=> {
-        for(const name of puzzler_names){
-            d3.selectAll('.'+name).attr('opacity',1)
-            d3.selectAll('circle.'+name).attr('stroke',"none")
-        }
-    })
-    .append('div')
-        .text(d=>d)
-        .attr('width', legendSize)
-        .attr('class', d=>'legend-text')
-
+// }
+layoutLegend()
+layoutHighScores("all")
 showFaces()
- 
 
-                                
+function layoutLegend(){
+    const header = app.append('div').attr('class', 'header')
+    header.append('div').attr('class', 'title').text('Puzzle Race')
+    const legendSize = 20
+    const legend = header.append('div').attr('class', 'legend-container')
+    legend.selectAll('div')
+        .data(puzzler_names)
+        .enter().append('div')
+        .attr('width', legendSize)
+        .attr('height', legendSize)
+        .attr('class', d=> 'face face-'+ d)
+        .on('mouseover', (event, d)=> {
+            d3.selectAll('.face').style('background','none').style('border', 'none')
+            d3.select('.face-'+d).style('background',colorScale(d)).style('border', '1px solid #2225D8')
+            for(const name of puzzler_names){
+                d3.selectAll('.'+name).style('opacity',.2)
+                d3.selectAll('circle.'+name).attr('stroke',"none")
+            }
+            d3.selectAll('.'+d).style('opacity',1)
+            d3.selectAll('circle.'+d).attr('stroke',"#2225D8")
+            d3.selectAll('.bar.'+d).attr('stroke',"#2225D8")
+        })
+        .on('mouseleave', (event, d)=> {
+            for(const name of puzzler_names){
+                d3.selectAll('.'+name).style('opacity',1)
+                d3.selectAll('circle.'+name).attr('stroke',"none")
+                d3.selectAll('.bar.'+d).attr('stroke',"none")
+            }
+        })
+        .append('div')
+            .text(d=>d)
+            .attr('width', legendSize)
+            .attr('class', d=>'legend-text')
 
+    showFaces()
+}
+
+                    
 
 function layoutSinglePuzzle(puzzleName){
     const puzzleData = Array.from(group_puzzle[puzzleName])
-    const userPuzzleData = d3.rollup(group_puzzle[puzzleName], v=> v, d=>d.puzzler_name)
+    const userPuzzleData = d3.rollup(group_puzzle[puzzleName],
+         v=> v.map(entry=> {
+            const best_time = d3.min(v, d => d.time);
+            return {
+                ...entry,
+                best_time: best_time}
+        }), 
+         d=>d.puzzler_name)
+                                
     const max_attempts = d3.max(puzzleData.map(d=> d.attempt_num))
     console.log('puzzleData', userPuzzleData)
+    
     const svg = plot_container.append('svg')
                         .attr('width', width)
                         .attr("height", height)
@@ -86,7 +102,6 @@ function layoutSinglePuzzle(puzzleName){
     const timeScale = d3.scaleLinear().domain([5, 30]).range([height-padding, padding])    
     const attemptScale = d3.scaleLinear().domain([1,max_attempts]).range([padding, width-padding]) 
     // attempt # vs time
-   
    
     const line = d3.line()
         .x((d) => attemptScale(d.attempt_num))
@@ -129,6 +144,32 @@ function layoutSinglePuzzle(puzzleName){
             d3.selectAll(`.${d.puzzle_name_id}`).style('opacity', 1)
         })
 
+
+   const best_time_line = d3.line()
+        .x((d) => attemptScale(d.attempt_num))
+        .y((d) => {
+         
+            return timeScale(d.best_time)});
+    const extendedUserPuzzleData = Array.from(userPuzzleData, ([puzzler_name, attempts]) => {      
+        const extendedAttempts = Array.from({ length: max_attempts }, (_, i) => {
+            return {
+                attempt_num: i +1,
+                best_time: attempts[i] ? attempts[i].best_time : attempts[0].best_time 
+            };
+        });
+        return [puzzler_name, extendedAttempts];
+    });
+    svg.selectAll("path.best-time-line")
+        .data(extendedUserPuzzleData).enter()
+        .append('path')
+        .attr('class', 'best-time-line')
+        .attr("d", d=> {
+            console.log("D",d)
+            return best_time_line(d[1])})    
+        .attr("stroke", d=>colorScale(d[0]))  
+        .attr("stroke-width", .5)
+        .attr("stroke-dasharray", "5,5");
+
     svg.append("g").attr('transform', `translate(${padding},0)`)
         .call(d3.axisLeft(timeScale).ticks(5))   
     svg.append("g").attr('transform', `translate(0,${ height-padding})`)
@@ -141,4 +182,74 @@ function layoutSinglePuzzle(puzzleName){
     
 
     
+}
+
+function layoutHighScores(puzzle_name) {
+    let highScores = [];
+    if (puzzle_name === "all") {
+        highScores = Array.from(d3.rollup(data, v => d3.min(v, d => d.time), d => d.puzzler_name), ([puzzler_name, best_time]) => ({
+            puzzler_name: puzzler_name,
+            best_time: best_time
+        }));
+    } else {
+        highScores = Array.from(
+                d3.rollup( group_puzzle[puzzle_name],
+            v => d3.min(v, d => d.time),
+            d => d.puzzler_name), 
+            ([puzzler_name, best_time]) => ({
+                puzzler_name: puzzler_name,
+                best_time: best_time
+        }));
+    }
+    highScores.sort((a, b) => a.best_time - b.best_time);
+    console.log("HIGHSCHORES", highScores)
+
+    const svg_container = plot_container.append('div').attr('class', 'svg-container').style('height', height+'px').style("position", 'relative')
+    const svg = svg_container.append('svg')
+        .attr('width', width)
+        .attr("height", height)
+        .style('border', '1px solid #2225D8')
+
+    const xScale = d3.scaleBand()
+        .domain(highScores.map(d => d.puzzler_name))
+        .range([padding, width - padding])
+        .padding(0.1);
+
+    const yScale = d3.scaleLinear()
+        .domain([0, d3.max(highScores, d => d.best_time)])
+        .nice()
+        .range([height - padding, padding]);
+
+    svg.selectAll('.bar')
+        .data(highScores)
+        .enter().append('rect')
+        .attr('class', d=> 'bar' + ` ${d.puzzler_name}`)
+        .attr('x', d => xScale(d.puzzler_name))
+        .attr('y', d => yScale(d.best_time))
+        .attr('width', xScale.bandwidth())
+        .attr('height', d => height - padding - yScale(d.best_time))
+        .attr('fill', d => colorScale(d.puzzler_name));
+
+    svg_container.selectAll('div.face')
+        .data(highScores)
+        .enter().append('div')
+        // .attr('class',d=> 'bar-face')
+        .attr('class',d=> 'face face-' +d.puzzler_name)
+        .style('position', 'absolute')
+        .style('z-index', '5')
+        .style('left', d => `${xScale(d.puzzler_name)}px`)
+        .style('top', d => `${yScale(d.best_time) - xScale.bandwidth()}px`)
+        .style('width', xScale.bandwidth() + "px")
+        .style('height',xScale.bandwidth()+ "px")
+
+    svg.append("g")
+        .attr('transform', `translate(0, ${height - padding})`)
+        .call(d3.axisBottom(xScale));
+
+    svg.append("g")
+        .attr('transform', `translate(${padding}, 0)`)
+        .call(d3.axisLeft(yScale));
+
+
+
 }
