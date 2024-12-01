@@ -51,8 +51,8 @@ function layoutLegend(){
         .attr('height', legendSize)
         .attr('class', d=> 'face face-'+ d)
         .on('mouseover', (event, d)=> {
-            d3.selectAll('.face').style('background','none').style('border', 'none')
-            d3.select('.face-'+d).style('background',colorScale(d)).style('border', '1px solid #2225D8')
+            d3.selectAll('.legend-container .face').style('background','none').style('border', 'none')
+            d3.select('.legend-container .face-'+d).style('background',colorScale(d)).style('border', '1px solid #2225D8')
             for(const name of puzzler_names){
                 d3.selectAll('.'+name).style('opacity',.2)
                 d3.selectAll('circle.'+name).attr('stroke',"none")
