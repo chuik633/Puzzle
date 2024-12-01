@@ -1,6 +1,4 @@
 
-// let data = await d3.csv('data/data.csv')
-//3.96 seconds per piece
 let data = await d3.csv('data/data.csv')
 data = data.map(d=>{
     let time_min =  parseInt(d.time.trim().split(':')[0])
@@ -30,12 +28,13 @@ const width = (window.innerWidth-20*4)/2
 const height =  width
 
 
-// for(const puzzleName of Object.keys(group_puzzle)){
-//     if(puzzleName != ""){
-//         layoutHighScores(puzzleName)
-//     }
+for(const puzzleName of Object.keys(group_puzzle)){
+    if(puzzleName != ""){
+        layoutSinglePuzzle(puzzleName)
+        layoutHighScores(puzzleName)
+    }
     
-// }
+}
 layoutLegend()
 layoutHighScores("all")
 showFaces()
@@ -236,9 +235,9 @@ function layoutHighScores(puzzle_name) {
         // .attr('class',d=> 'bar-face')
         .attr('class',d=> 'face face-' +d.puzzler_name)
         .style('position', 'absolute')
-        .style('z-index', '5')
+        .style('z-index', '0')
         .style('left', d => `${xScale(d.puzzler_name)}px`)
-        .style('top', d => `${yScale(d.best_time) - xScale.bandwidth()}px`)
+        .style('top', d => `${yScale(d.best_time) - xScale.bandwidth()/2}px`)
         .style('width', xScale.bandwidth() + "px")
         .style('height',xScale.bandwidth()+ "px")
 

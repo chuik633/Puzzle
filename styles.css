@@ -49,6 +49,7 @@ body{
     flex-direction: row;
     gap: 20px;
     overflow-x:auto;
+    z-index:20;
    
 }
 
@@ -76,14 +77,14 @@ body{
 }
 
 .plot-container .face{
-    z-index: 3;
+    z-index: 0;
     /* min-width: 100px;
     min-height: 100px; */
     position: relative;
     /* padding: 10px; */
 }
 .legend-container .face{
-    z-index: 3;
+    z-index: 20;
     min-width: 100px;
     min-height: 100px;
     position: relative;
