@@ -1,43 +1,102 @@
 
-let data = await d3.csv('data/data.csv')
-data = data.map(d=>{
-    let time_min =  parseInt(d.time.trim().split(':')[0])
-    let time_sec = parseInt(d.time.trim().split(':')[1])
-    let total_time = time_min + time_sec/60
-    return {
-        puzzle_name_id: d.puzzle_name.trim().replace(/\s+/g, '-'),
-        puzzle_name: d.puzzle_name.trim(),
-        puzzler_name: d.puzzler_name.trim(),
-        attempt_num: parseInt(d.attempt_num.trim()),
-        time: total_time,
-        time_min: time_min,
-        time_sec: time_sec,
+// const link = "https://docs.google.com/spreadsheets/d/1vX27YI9FHUgYR9pkKbbQMZ8BdW6_IDtPsT8L4-CeMnU/edit?usp=sharing"
+// const SPREADSHEET_ID = "1vX27YI9FHUgYR9pkKbbQMZ8BdW6_IDtPsT8L4-CeMnU"
+// const API_KEY = 'AIzaSyBSuEJzNjYnuehwPk0fGnmTcZwCpFzzSA8'
+// function initClient() {
+//     gapi.client.init({
+//     apiKey: API_KEY,
+//     discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
+//     }).then(() => {
+//     console.log('Google Sheets API client initialized');
+//     // Once initialized, fetch data
+//     fetchData();
+//     }).catch(error => {
+//     console.error("Error initializing gapi client", error);
+//     });
+// }
 
-    }
-})
-const puzzler_names = Array.from(new Set(data.map(d=>d.puzzler_name)))
-const colorScale = d3.scaleOrdinal().domain(puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
-const group_puzzle = Object.fromEntries(d3.rollup(data, v=>v, d=>d.puzzle_name))
+// // Load the gapi client and initialize it
+// function start() {
+//     gapi.load('client', initClient);  // Ensure the client is loaded before initializing
+// }
+
+// start();
+
+const fetchSheetData = async () => {
+    const response = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: 'Sheet1',  
+      key: API_KEY
+    });
+  
+    const rows = response.result.values;
+    const numColumns = rows[0] ? rows[0].length : 0;
+    const numRows = rows.length;
+
+    const range = `Sheet1!A1:${String.fromCharCode(64 + numColumns)}${numRows}`;
+    return range;
+  };
+
+const fetchData = async () => {
+  const range = await fetchSheetData(); 
+  const response = await gapi.client.sheets.spreadsheets.values.get({
+    spreadsheetId: SPREADSHEET_ID,
+    range: range,  
+    key: API_KEY
+});
+
+  return response.result.values;  // Return the fetched data
+};
+// let data = await fetchData()
+let data = await d3.csv('data/data.csv')
+let group_puzzle, colorScale, puzzler_names;
 
 const app = d3.select('#app')
 const plot_container = app.append('div').attr('class', 'plot-container')
-
-
 const padding = 50
 const width = (window.innerWidth-20*4)/2
 const height =  width
 
 
-for(const puzzleName of Object.keys(group_puzzle)){
-    if(puzzleName != ""){
-        layoutSinglePuzzle(puzzleName)
-        layoutHighScores(puzzleName)
-    }
+driver_visualizePuzzles(data)
+
+function driver_visualizePuzzles(data){
+    data = data.map(d=>{
+        let time_min =  parseInt(d.time.trim().split(':')[0])
+        let time_sec = parseInt(d.time.trim().split(':')[1])
+        let total_time = time_min + time_sec/60
+        return {
+            puzzle_name_id: d.puzzle_name.trim().replace(/\s+/g, '-'),
+            puzzle_name: d.puzzle_name.trim(),
+            puzzler_name: d.puzzler_name.trim(),
+            attempt_num: parseInt(d.attempt_num.trim()),
+            time: total_time,
+            time_min: time_min,
+            time_sec: time_sec,
     
+        }
+    })
+    
+    puzzler_names = Array.from(new Set(data.map(d=>d.puzzler_name)))
+    colorScale = d3.scaleOrdinal().domain(puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
+    group_puzzle = Object.fromEntries(d3.rollup(data, v=>v, d=>d.puzzle_name))
+
+   
+    for(const puzzleName of Object.keys(group_puzzle)){
+        if(puzzleName != ""){
+            layoutSinglePuzzle(puzzleName)
+            layoutHighScores(puzzleName)
+        }
+        
+    }
+    layoutLegend()
+    layoutHighScores("all")
+    showFaces()
 }
-layoutLegend()
-layoutHighScores("all")
-showFaces()
+
+
+
+
 
 function layoutLegend(){
     const header = app.append('div').attr('class', 'header')

@@ -44,7 +44,6 @@ function sketchFace(p, name, parentDiv){
         let height = rect.height;
         width = p.min(width,height)
         height = width
-        console.log("width, height", name, width, height,rect)
         padding = width /10
         face_size = width - padding*2
 
@@ -61,7 +60,6 @@ function sketchFace(p, name, parentDiv){
 
 
 function drawFace(p,img, face_size, padding){
-    
     let rotationSpeed = 0.05; 
     let angle = 0;
 

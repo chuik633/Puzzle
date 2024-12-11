@@ -63,7 +63,6 @@ body{
     padding-top: 230px;
     align-items: center;
     overflow:hidden;
-    
     left: 0px;
 }
 .plot-container{
@@ -72,7 +71,7 @@ body{
     flex-direction: row;
     gap: 15px;
     flex-wrap: wrap;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x:hidden;
 }
 
