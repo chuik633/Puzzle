@@ -1,66 +1,19 @@
 
-// const link = "https://docs.google.com/spreadsheets/d/1vX27YI9FHUgYR9pkKbbQMZ8BdW6_IDtPsT8L4-CeMnU/edit?usp=sharing"
-// const SPREADSHEET_ID = "1vX27YI9FHUgYR9pkKbbQMZ8BdW6_IDtPsT8L4-CeMnU"
-// const API_KEY = 'AIzaSyBSuEJzNjYnuehwPk0fGnmTcZwCpFzzSA8'
-// function initClient() {
-//     gapi.client.init({
-//     apiKey: API_KEY,
-//     discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
-//     }).then(() => {
-//     console.log('Google Sheets API client initialized');
-//     // Once initialized, fetch data
-//     fetchData();
-//     }).catch(error => {
-//     console.error("Error initializing gapi client", error);
-//     });
-// }
-
-// // Load the gapi client and initialize it
-// function start() {
-//     gapi.load('client', initClient);  // Ensure the client is loaded before initializing
-// }
-
-// start();
-
-const fetchSheetData = async () => {
-    const response = await gapi.client.sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: 'Sheet1',  
-      key: API_KEY
-    });
-  
-    const rows = response.result.values;
-    const numColumns = rows[0] ? rows[0].length : 0;
-    const numRows = rows.length;
-
-    const range = `Sheet1!A1:${String.fromCharCode(64 + numColumns)}${numRows}`;
-    return range;
-  };
-
-const fetchData = async () => {
-  const range = await fetchSheetData(); 
-  const response = await gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: SPREADSHEET_ID,
-    range: range,  
-    key: API_KEY
-});
-
-  return response.result.values;  // Return the fetched data
-};
 // let data = await fetchData()
-let data = await d3.csv('data/data.csv')
+// let data = await d3.csv('data/data.csv')
+let data;
 let group_puzzle, colorScale, puzzler_names;
 
 const app = d3.select('#app')
 const plot_container = app.append('div').attr('class', 'plot-container')
+
 const padding = 50
 const width = (window.innerWidth-20*4)/2
 const height =  width
 
 
-driver_visualizePuzzles(data)
-
-function driver_visualizePuzzles(data){
+function driver_visualizePuzzles(input_data){
+    data = input_data
     data = data.map(d=>{
         let time_min =  parseInt(d.time.trim().split(':')[0])
         let time_sec = parseInt(d.time.trim().split(':')[1])
@@ -93,9 +46,6 @@ function driver_visualizePuzzles(data){
     layoutHighScores("all")
     showFaces()
 }
-
-
-
 
 
 function layoutLegend(){
@@ -149,14 +99,12 @@ function layoutSinglePuzzle(puzzleName){
          d=>d.puzzler_name)
                                 
     const max_attempts = d3.max(puzzleData.map(d=> d.attempt_num))
-    console.log('puzzleData', userPuzzleData)
-    
     const svg = plot_container.append('svg')
                         .attr('width', width)
                         .attr("height", height)
                         .attr('viewBox', [0,0,width,height])
                         .style('border', '1px solid #2225D8')
-       
+
     const timeScale = d3.scaleLinear().domain([5, 30]).range([height-padding, padding])    
     const attemptScale = d3.scaleLinear().domain([1,max_attempts]).range([padding, width-padding]) 
     // attempt # vs time
@@ -260,7 +208,7 @@ function layoutHighScores(puzzle_name) {
         }));
     }
     highScores.sort((a, b) => a.best_time - b.best_time);
-    console.log("HIGHSCHORES", highScores)
+
 
     const svg_container = plot_container.append('div').attr('class', 'svg-container').style('height', height+'px').style("position", 'relative')
     const svg = svg_container.append('svg')

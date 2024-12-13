@@ -1,5 +1,4 @@
 
-const puzzler_names = ['Emi', 'Herm', 'Josh', 'Kath', "Steph"]
 
 
 
