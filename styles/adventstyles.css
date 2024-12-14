@@ -13,10 +13,14 @@
     flex-direction: column;
     gap: 10px;
     align-items: center;
-    padding-top: 160px;
+    padding-top: 200px;
 
 }
 
+.face{
+    z-index: 10;
+    position: absolute;
+}
 
 .advent .plot-container{
     top: 20px;

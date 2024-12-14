@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showFaces();
 });
 
-function showFaces(){
+function showFaces(puzzler_names){
     let faceElements = document.querySelectorAll('.face');
     faceElements.forEach(faceElement => {
         let name = ''
@@ -17,7 +17,9 @@ function showFaces(){
         }
         
         if(puzzler_names.includes(name)){
+            console.log("drawing face",name)
             if(!faceElement.classList.contains('displayed')){
+                console.log("here")
                 new p5((p) => sketchFace(p, name, faceElement));
                 faceElement.classList.add('displayed');
             }
@@ -51,7 +53,7 @@ function sketchFace(p, name, parentDiv){
       };
     p.draw = function () {
         p.clear();
-        img.loadPixels()
+        // img.loadPixels()
         drawFace(p, img, face_size, padding)
     };
 
@@ -59,6 +61,7 @@ function sketchFace(p, name, parentDiv){
 
 
 function drawFace(p,img, face_size, padding){
+   
     let rotationSpeed = 0.05; 
     let angle = 0;
 

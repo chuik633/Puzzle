@@ -5,6 +5,7 @@ const today = new Date();
 let today_date = today.getDate();
 let viewMode;
 let day_data=[]
+let advent_puzzler_names;
 
 
 
@@ -48,7 +49,7 @@ function driver_christmasPuzzles(data){
 
     // let apuzzler_data = {}
 
-    const advent_puzzler_names = Array.from(Object.keys(data[0]).slice(1,))
+    advent_puzzler_names = Array.from(Object.keys(data[0]).slice(1,))
 
     personColorScale = d3.scaleOrdinal().domain(advent_puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
     // const advent_puzzler_names = data[0].slice(1,data[0].length)
@@ -69,6 +70,7 @@ function set_view_mode(selectedMode){
         layout_puzzle_difficulty(day_data)
     }else{
         layout_puzzle_leaderboard(day_data)
+        showFaces(advent_puzzler_names)
     }
 
 }
@@ -241,63 +243,51 @@ function layout_puzzle_leaderboard(data){
         return [row_num*calSize, col_num*calSize]
     }
     
-    const svg = plot_container.append('svg')
-        .attr('width', calWidth)
-        .attr("height", calWidth)
-        .attr('viewBox', [0,0,calWidth,calWidth])
+    const svg_div = plot_container.append('div')
+        .attr('class', 'svg-div')
+        .style('width', calWidth + 'px')
+        .style("height", calWidth+ 'px')
+        .style('position', 'relative')
     
     const dayText = ['sun', "mon", 'tue', "wed", "th", "fri", "sa"]
-    svg.selectAll('text.day-label')  
-        .data(d3.range(1,8))  
-        .enter().append('text').attr('class', 'day-label')
-        .style('width', calSize + "px")
-        .attr('height', 10)
-        .text(d=> dayText[d-1])
-        .attr('x', d=> dayScale(d)[0]+ calSize / 2)
-        .attr('y', d=> dayScale(d)[1]+ 10)
-        .attr('stroke', 'black')
-        .attr('stroke-width', .8)
-        .style('text-anchor', 'middle') 
-        .attr('rx',5)
-        .attr('ry', 5)
+    svg_div.selectAll('div.day-label')  
+        .data(d3.range(1, 8))  
+        .enter().append('div')
+        .attr('class', 'day-label')
+        .style('position', 'absolute')
+        .style('width', calSize + 'px')
+        .style('height', calSize + 'px')
+        .style('color', 'black')
+        .style('text-anchor', 'middle')
+        .text(d => dayText[d - 1])
+        .style('left', d => `${dayScale(d)[0]}px`) 
+        .style('top', d => `${dayScale(d)[1] + 10}px`); 
 
-    const dayblock = svg.selectAll('g.day-block-difficulty')
+  
+
+    const faceblocks = svg_div.selectAll('div.face')
         .data(data)
         .enter()
-        .append('g')
-        .attr('class', d=>'day-block-difficulty day-'+d.day)
-        .style('opacity', d=>{
-            if(d.day>today_date){
-                return .1
+        .append('div')
+        .attr('class', d => {
+            if (d.average_time == undefined) {
+                return;
             }
-            return  1
-           
+            else{
+                return 'face face-' + d.fastest.name}})
+        .style('width', calSize + 'px')
+        .style('height', calSize + 'px')
+        .style('position', 'absolute')
+        .style('left', d => dayScale(d.day)[0] + 'px')
+        .style('top', d => dayScale(d.day)[1] + 25 + 'px')
+        .style('background-color', d => {
+            if (d.average_time == undefined) {
+                return "#F7F7F0";
+            }
+            return personColorScale(d.fastest.name);
         })
-    
+        .style("border", ".5px solid black")
+        .style('border-radius', '5px')
 
-    dayblock.append('rect').attr('width', calSize)
-        .attr('height', calSize)
-        .attr('x', d=> dayScale(d.day)[0])
-        .attr('y', d=> dayScale(d.day)[1] + 15)
-        .attr('fill', d=>{
-            if(d.average_time==undefined){
-                return "#F7F7F0"
-            }
-            return personColorScale(d.fastest.name)
-           })
-        .attr('stroke', 'black')
-        .attr('stroke-width', .8)
-        .attr('rx',5)
-        .attr('ry', 5)
-        .on('click', (event, d)=>{
-            console.log('day clicked', d)
-        })
-       
-    dayblock.append('text')
-        .attr('class', d=>'cal-num-label day-'+d.day)
-        .attr('x',d=> dayScale(d.day)[0]+calSize / 2) 
-        .attr('y', d=> dayScale(d.day)[1]+15 + calSize / 2)  
-        .style('text-anchor', 'middle')  
-        .style('dominant-baseline', 'middle') 
-        .text(d => d.day);
+        
 }
