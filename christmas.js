@@ -1,16 +1,17 @@
 
 let days = d3.range(1,26);
-const calWidth = window.innerWidth -20
+const calWidth = Math.min(window.innerWidth -20,600)
 const today = new Date();
 let today_date = today.getDate();
+let viewMode;
+let day_data=[]
 
 
 
 function driver_christmasPuzzles(data){
     app.attr('class', 'advent')
-    layout_header()
     
-    const day_data = data.map(d=>{
+    day_data = data.map(d=>{
         let day_entry =  {
             day: parseInt(d.Day),
             all_times:[],
@@ -38,10 +39,18 @@ function driver_christmasPuzzles(data){
         }
         day_entry['average_time'] = d3.mean(day_entry.all_times)
         return day_entry
+        
     })
+   
+    layout_header()
+    
     layout_puzzle_difficulty(day_data)
 
     // let apuzzler_data = {}
+
+    const advent_puzzler_names = Array.from(Object.keys(data[0]).slice(1,))
+
+    personColorScale = d3.scaleOrdinal().domain(advent_puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
     // const advent_puzzler_names = data[0].slice(1,data[0].length)
     // console.log('puzzler names', advent_puzzler_names)
     // for(const name of advent_puzzler_names){
@@ -51,22 +60,58 @@ function driver_christmasPuzzles(data){
 
 }
 
+function set_view_mode(selectedMode){
+    if(selectedMode == viewMode){
+        return
+    }
+    plot_container.selectAll("*").remove()
+    if(selectedMode == "difficulty"){
+        layout_puzzle_difficulty(day_data)
+    }else{
+        layout_puzzle_leaderboard(day_data)
+    }
+
+}
+
 function layout_header(){
     const header_container = app.append('div').attr('class', 'advent-header')
     const small_info = header_container.append('div').attr('class', 'header-small-font')
     small_info.append('h5').text("December 2024")
     small_info.append('h3').text("THE")
     small_info.append('h5').text("Price: $idk")
-  
     header_container.append('h1').text("Advent Puzzle")
-    
     header_container.append('h4').text("NYT PUZZLE COMPANY")
+
+    const viewOptions = ['difficulty', 'leaderboard']
+    const radioParams = header_container.append('form').attr('id', 'view-options')
+
+    for (const viewOption of viewOptions) {
+        const option = radioParams.append('label').attr('class', 'radio-custom');
+        const optionInput = option.append('input')
+            .attr('type', 'radio')
+            .attr('name', 'view-option')
+            .attr('value', viewOption);
+    
+        if (viewOption === viewOptions[0]) {
+            optionInput.attr('checked', true);
+        }
+    
+        optionInput.on('change', function () {
+            const selected_option = d3.select(this).property('value');
+            set_view_mode(selected_option);
+        });
+    
+        option.append('span').attr('class', 'radio-button');
+        option.append('div').attr('class', 'radio-value').text(viewOption);
+    }
+
+    
+
 }
 
 
 
 function layout_puzzle_difficulty(data){
-
     const fastest_time = Math.min(...data.map(d=> d.fastest.time))
     const slowest_time = Math.max(...data.map(d=> Math.max(...d.all_times.filter(time => time !== undefined))))
     const opacityScale = d3.scaleLinear().domain([fastest_time, slowest_time-2]).range([0,1])
@@ -170,6 +215,75 @@ function layout_puzzle_difficulty(data){
                 return "#F7F7F0"
             }
             return  colorScale(d.average_time)
+           })
+        .attr('stroke', 'black')
+        .attr('stroke-width', .8)
+        .attr('rx',5)
+        .attr('ry', 5)
+        .on('click', (event, d)=>{
+            console.log('day clicked', d)
+        })
+       
+    dayblock.append('text')
+        .attr('class', d=>'cal-num-label day-'+d.day)
+        .attr('x',d=> dayScale(d.day)[0]+calSize / 2) 
+        .attr('y', d=> dayScale(d.day)[1]+15 + calSize / 2)  
+        .style('text-anchor', 'middle')  
+        .style('dominant-baseline', 'middle') 
+        .text(d => d.day);
+}
+
+function layout_puzzle_leaderboard(data){  
+    const calSize = calWidth/7
+    function dayScale(day){
+        const col_num = Math.floor((day-1)/7)
+        const row_num = (day-1)%7 
+        return [row_num*calSize, col_num*calSize]
+    }
+    
+    const svg = plot_container.append('svg')
+        .attr('width', calWidth)
+        .attr("height", calWidth)
+        .attr('viewBox', [0,0,calWidth,calWidth])
+    
+    const dayText = ['sun', "mon", 'tue', "wed", "th", "fri", "sa"]
+    svg.selectAll('text.day-label')  
+        .data(d3.range(1,8))  
+        .enter().append('text').attr('class', 'day-label')
+        .style('width', calSize + "px")
+        .attr('height', 10)
+        .text(d=> dayText[d-1])
+        .attr('x', d=> dayScale(d)[0]+ calSize / 2)
+        .attr('y', d=> dayScale(d)[1]+ 10)
+        .attr('stroke', 'black')
+        .attr('stroke-width', .8)
+        .style('text-anchor', 'middle') 
+        .attr('rx',5)
+        .attr('ry', 5)
+
+    const dayblock = svg.selectAll('g.day-block-difficulty')
+        .data(data)
+        .enter()
+        .append('g')
+        .attr('class', d=>'day-block-difficulty day-'+d.day)
+        .style('opacity', d=>{
+            if(d.day>today_date){
+                return .1
+            }
+            return  1
+           
+        })
+    
+
+    dayblock.append('rect').attr('width', calSize)
+        .attr('height', calSize)
+        .attr('x', d=> dayScale(d.day)[0])
+        .attr('y', d=> dayScale(d.day)[1] + 15)
+        .attr('fill', d=>{
+            if(d.average_time==undefined){
+                return "#F7F7F0"
+            }
+            return personColorScale(d.fastest.name)
            })
         .attr('stroke', 'black')
         .attr('stroke-width', .8)

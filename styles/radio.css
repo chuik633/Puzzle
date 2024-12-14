@@ -1,0 +1,44 @@
+input[type="radio"] {
+    display: none; /* Hide the native radio button */
+}
+label.radio-custom {
+display: flex;
+flex-direction: row;
+gap: 10px;
+}
+
+.radio-value {
+    font-size: 12px;
+    font-weight: 100;
+    font-family: 'Courier New', Courier, monospace;
+    color: black;
+    position: relative;
+    top:-2px;
+}
+
+.radio-button {
+display: flex;
+cursor: pointer;
+width: 10px;
+height: 10px;
+border: 0.8px solid black;
+border-radius: 20px;
+}
+
+
+input[type="radio"]:checked + .radio-button {
+background-color: black;
+}
+
+
+#view-options{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-self: center;
+    top: 40px;
+    margin-top: -20px;
+    position: relative;
+    /* position: fixed;
+    top: 0px; */
+}

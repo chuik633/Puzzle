@@ -2,7 +2,7 @@
 // let data = await fetchData()
 // let data = await d3.csv('data/data.csv')
 let data;
-let group_puzzle, colorScale, puzzler_names;
+let group_puzzle, personColorScale, puzzler_names;
 
 let app = d3.select('#app')
 let plot_container = app.append('div').attr('class', 'plot-container')
@@ -31,7 +31,7 @@ function driver_visualizePuzzles(input_data){
     })
     
     puzzler_names = Array.from(new Set(data.map(d=>d.puzzler_name)))
-    colorScale = d3.scaleOrdinal().domain(puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
+    personColorScale = d3.scaleOrdinal().domain(puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
     group_puzzle = Object.fromEntries(d3.rollup(data, v=>v, d=>d.puzzle_name))
 
    
@@ -61,7 +61,7 @@ function layoutLegend(){
         .attr('class', d=> 'face face-'+ d)
         .on('mouseover', (event, d)=> {
             d3.selectAll('.legend-container .face').style('background','none').style('border', 'none')
-            d3.select('.legend-container .face-'+d).style('background',colorScale(d)).style('border', '1px solid #2225D8')
+            d3.select('.legend-container .face-'+d).style('background',personColorScale(d)).style('border', '1px solid #2225D8')
             for(const name of puzzler_names){
                 d3.selectAll('.'+name).style('opacity',.2)
                 d3.selectAll('circle.'+name).attr('stroke',"none")
@@ -118,14 +118,14 @@ function layoutSinglePuzzle(puzzleName){
         .append('path')
         .attr('class', d=>`${d[1][0].puzzle_name_id} ${d[0]} ${d[1][0].puzzle_name_id}-${d[0]}`)
         .attr("fill", "none")
-        .attr("stroke", d=> colorScale(d[0]))
+        .attr("stroke", d=> personColorScale(d[0]))
         .attr("stroke-width", 1.5)
         .attr("d", d=> {
             return line(d[1])
         })
         .on('mouseover', (event,d)=>{
             d3.selectAll('.face').style('background','none').style('border', 'none')
-            d3.select('.face-'+d.puzzler_name).style('background',colorScale(d.puzzler_name)).style('border', '1px solid #2225D8')
+            d3.select('.face-'+d.puzzler_name).style('background',personColorScale(d.puzzler_name)).style('border', '1px solid #2225D8')
             d3.selectAll(`.${d[1][0].puzzle_name_id}`).style('opacity', .3)
             d3.selectAll(`.${d[1][0].puzzle_name_id}-${d[0]}`).style('opacity', 1)
         })
@@ -139,10 +139,10 @@ function layoutSinglePuzzle(puzzleName){
         .attr('r', 5)
         .attr('cx',d=> attemptScale(d.attempt_num))
         .attr('cy',d=> timeScale(d.time))
-        .style('fill', d=>colorScale(d.puzzler_name))
+        .style('fill', d=>personColorScale(d.puzzler_name))
         .on('mouseover', (event,d)=>{
             d3.selectAll('.face').style('background','none').style('border', 'none')
-            d3.select('.face-'+d.puzzler_name).style('background',colorScale(d.puzzler_name)).style('border', '1px solid #2225D8')
+            d3.select('.face-'+d.puzzler_name).style('background',personColorScale(d.puzzler_name)).style('border', '1px solid #2225D8')
             d3.selectAll(`.${d.puzzle_name_id}`).style('opacity', .3)
             d3.selectAll(`.${d.puzzle_name_id}-${d.puzzler_name}`).style('opacity', 1)
         })
@@ -172,7 +172,7 @@ function layoutSinglePuzzle(puzzleName){
         .attr("d", d=> {
             console.log("D",d)
             return best_time_line(d[1])})    
-        .attr("stroke", d=>colorScale(d[0]))  
+        .attr("stroke", d=>personColorScale(d[0]))  
         .attr("stroke-width", .5)
         .attr("stroke-dasharray", "5,5");
 
@@ -234,7 +234,7 @@ function layoutHighScores(puzzle_name) {
         .attr('y', d => yScale(d.best_time))
         .attr('width', xScale.bandwidth())
         .attr('height', d => height - padding - yScale(d.best_time))
-        .attr('fill', d => colorScale(d.puzzler_name));
+        .attr('fill', d => personColorScale(d.puzzler_name));
 
     svg_container.selectAll('div.face')
         .data(highScores)
