@@ -12,11 +12,9 @@ async function initClient() {
         });
         console.log('api inited');
 
-        const data = await fetchData(); 
-        const data_objet = reformat_data(data)
-        console.log(data);
-        console.log(data_objet)
-        run(data_objet); 
+        let sheet_data = await fetchData(); 
+        data = reformat_data(sheet_data)
+        run(data); 
 
     } catch (error) {
         console.error("Error!!", error);
@@ -33,7 +31,8 @@ function start() {
 const fetchSheetData = async () => {
     const response = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'Sheet1',  
+    //   range: 'Sheet1',  
+      range: 'AdventCal',  
       key: API_KEY
     });
   
@@ -41,7 +40,7 @@ const fetchSheetData = async () => {
     const numColumns = rows[0] ? rows[0].length : 0;
     const numRows = rows.length;
 
-    const range = `Sheet1!A1:${String.fromCharCode(64 + numColumns)}${numRows}`;
+    const range = `AdventCal!A1:${String.fromCharCode(64 + numColumns)}${numRows}`;
     return range;
   };
 
@@ -61,7 +60,6 @@ const fetchData = async () => {
 start();
 
 function reformat_data(data){
-    console.log("data",data)
     let data_object = []
     let col_names = data[0]
     for(let row_idx = 1; row_idx<data.length; row_idx++){
@@ -77,6 +75,7 @@ function reformat_data(data){
 
 function run(data){
     console.log("RUNNING ON DATA: ", data)
-    driver_visualizePuzzles(data)
+    driver_christmasPuzzles(data)
+    // driver_visualizePuzzles(data)
 
 }

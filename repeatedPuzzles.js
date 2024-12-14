@@ -4,12 +4,12 @@
 let data;
 let group_puzzle, colorScale, puzzler_names;
 
-const app = d3.select('#app')
-const plot_container = app.append('div').attr('class', 'plot-container')
+let app = d3.select('#app')
+let plot_container = app.append('div').attr('class', 'plot-container')
 
-const padding = 50
-const width = (window.innerWidth-20*4)/2
-const height =  width
+let padding = 50
+let width = (window.innerWidth-20*4)/2
+let height =  width
 
 
 function driver_visualizePuzzles(input_data){

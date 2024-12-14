@@ -1,7 +1,7 @@
 *{
     box-sizing: border-box;
     font-family: 'Courier New', Courier, monospace;
-    color: #2225D8 !important;
+    color: #2225D8;
     margin:0px;
 }
 body{
@@ -105,7 +105,7 @@ canvas{
     /* pointer-events: none; */
 }
 text{
-    fill: #2225D8 !important;
+    fill: #2225D8 ;
 }
 
 .tick{

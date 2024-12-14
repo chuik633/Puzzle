@@ -1,0 +1,120 @@
+@font-face {
+    font-family: Bagel;
+    src: url('BagelFatOne-Regular.ttf');
+}
+@font-face {
+    font-family: Cygnet;
+    src: url('Cygnet.ttf');
+}
+
+
+#app.advent{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding-top: 160px;
+}
+
+.advent .plot-container{
+    top: 0px;
+    position: relative;
+}
+
+.day-label{
+    font-size:10px;
+    font-weight: 100;
+    text-align: center;
+
+    
+    font-family:'Courier New', Courier, monospace
+}
+.cal-num-label{
+    fill: black !important;
+}
+
+.advent-header{
+    color: black;
+    width: 100vw;
+    position: fixed;
+    top: 0px;
+    border-bottom: .6px solid black;
+    padding: 10px 20px;
+    gap: 15px;
+
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.advent-header h1{
+    color: #000;
+    text-align: center;
+    font-family: "Cygnet";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height:40px;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center;
+    letter-spacing: -1.5px;
+
+    /* left: 50%;
+    transform: translate(-50%,50%);
+    text-anchor:middle; */
+    
+}
+
+.header-small-font{
+    position: relative;
+    padding: 5px 13px;
+    left: 0px;
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header-small-font h5{
+    color: black;
+    font-family: Cygnet;
+    font-size: 10px;
+    width: fit-content;
+    letter-spacing: 1px;
+
+}
+
+
+.advent-header h4 {
+    color: #000;
+    font-family: "Courier New";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+   
+}
+.advent-header h4 {
+    font-size: 8px;
+    transform-origin: right bottom;
+    right: 0px;
+    top: 10px;
+    letter-spacing: 2px;
+    width: 100%;
+
+    text-align: center;
+
+}
+
+.advent-header h3{
+    font-family: Cygnet;
+    color: black;
+    top: 8px;
+    letter-spacing: 2px;
+
+    position: relative;
+    width: fit-content;
+    text-align: center;
+    
+
+}
