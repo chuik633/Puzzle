@@ -58,13 +58,15 @@ function driver_christmasPuzzles(data){
     })
    
     console.log(day_data)
+    advent_puzzler_names = Array.from(Object.keys(data[0]).slice(1,))
     layout_header()
+    layout_legend()
     
     layout_puzzle_difficulty(day_data)
 
     // let apuzzler_data = {}
 
-    advent_puzzler_names = Array.from(Object.keys(data[0]).slice(1,))
+    
 
     personColorScale = d3.scaleOrdinal().domain(advent_puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
     // const advent_puzzler_names = data[0].slice(1,data[0].length)
@@ -126,6 +128,49 @@ function layout_header(){
 
 }
 
+function layout_legend(){
+    const popup_container = app.append('div').attr('class', "popup-container").style('display', 'none')
+    const legendSize = 20
+    const legend = app.append('div').attr('class', 'legend-container')
+    if(window.innerWidth > 800){
+        legend.attr('class', 'legend-container side')
+
+    }
+    legend.selectAll('div')
+        .data(advent_puzzler_names)
+        .enter().append('div')
+        .style('width', legendSize + 'px')
+        .style('height', legendSize + 'px')
+        .attr('class', d=> 'face face-'+ d)
+        .on('mouseover', (event, d)=> {
+            d3.selectAll('.legend-container .face').style('background','none').style('border', 'none')
+            d3.select('.legend-container .face-'+d).style('background',personColorScale(d)).style('border', '1px solid #2225D8')
+            for(const name of advent_puzzler_names){
+                d3.selectAll('.'+name).style('opacity',.2)
+
+            }
+            d3.selectAll('.'+d).style('opacity',1)
+            d3.selectAll('circle.'+d).attr('stroke-width',2)
+            d3.selectAll('.bar.'+d).attr('stroke-width',2)
+        })
+        .on('mouseleave', (event, d)=> {
+            for(const name of advent_puzzler_names){
+                d3.selectAll('.'+name).style('opacity',1)
+                d3.selectAll('.bar.'+d).attr('stroke-width',.8)
+            }
+        })
+        .on('click', (event,d)=>{
+            popup_container.style('display', 'flex')
+            personStats(popup_container, flattened_day_data, d)
+        })
+        .append('div')
+            .text(d=>d)
+            .style('width', legendSize + 'px')
+            .style('font-size', 8 + 'px')
+            .attr('class', d=>'legend-text')
+
+    showFaces(advent_puzzler_names)
+}
 
 
 function layout_puzzle_difficulty(data){

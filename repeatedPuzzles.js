@@ -67,14 +67,14 @@ function layoutLegend(){
                 d3.selectAll('circle.'+name).attr('stroke',"none")
             }
             d3.selectAll('.'+d).style('opacity',1)
-            d3.selectAll('circle.'+d).attr('stroke',"#2225D8")
-            d3.selectAll('.bar.'+d).attr('stroke',"#2225D8")
+            d3.selectAll('circle.'+d).attr('stroke-width',2)
+            d3.selectAll('.bar.'+d).attr('stroke-width',2)
         })
         .on('mouseleave', (event, d)=> {
             for(const name of puzzler_names){
                 d3.selectAll('.'+name).style('opacity',1)
-                d3.selectAll('circle.'+name).attr('stroke',"none")
-                d3.selectAll('.bar.'+d).attr('stroke',"none")
+                d3.selectAll('circle.'+name).attr('stroke-width',.8)
+                d3.selectAll('.bar.'+d).attr('stroke-width',.8)
             }
         })
         .append('div')
