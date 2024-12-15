@@ -14,7 +14,7 @@ function personStats(popup_container, flattened_data, name){
 
     //text row 1
     const row1 = card.append('div').attr('class', 'flex-row')
-    row1.append('div').attr('class', 'face face-'+name).style('width', `${100}px`).style('height', `${100}px`)
+    row1.append('div').attr('class', 'face face-'+name).style('width', `${100}px`).style('height', `${100}px`).style('flex-shrink', 0)
     showFaces([name])
    
     const text_col = row1.append('div').attr('class', 'flex-col')
@@ -31,19 +31,19 @@ function personStats(popup_container, flattened_data, name){
     const text_col2 = row2.append('div').attr('class', 'flex-col')
     text_col2.append('h3').text('BEST PUZZLE')
     text_col2.append('p').text(`${name}'s best puzzle is December ${fastest_entry.day} which they completed in ${Math.round(fastest_entry.time)} min 
-            and ${60*(fastest_entry.time-Math.round(fastest_entry.time))} seconds!`)
+            and ${Math.round(60*(fastest_entry.time-Math.round(fastest_entry.time)))} seconds!`)
 
 
     const row3 = card.append('div').attr('class', 'flex-row')
-    row3.append('img')
-        .attr('src',`/assets/puzzles/AdventCalendar3 ${slowest_entry.day}.png`)
+    row2.append('img')
+        .attr('src',`./assets/puzzles/AdventCalendar3 ${slowest_entry.day}.png`)
         .style('height', 100+'px').style('border', '.5px solid black')
 
     const difference = Math.round((slowest_entry.time - fastest_entry.time)*10)/10
-    const text_col3 = row3.append('div').attr('class', 'flex-col')
+    const text_col3 = row2.append('div').attr('class', 'flex-col')
     text_col3.append('h3').text('WORST PUZZLE')
-    text_col3.append('p').text(`Unfortunately, ${name} struggled with December ${fastest_entry.day} which they completed in ${Math.round(fastest_entry.time)} min 
-            and ${60*(fastest_entry.time-Math.round(fastest_entry.time))} seconds... That's ${difference} min slower that their best time! Tuf.`)
+    text_col3.append('p').text(`Unfortunately, ${name} struggled with December ${slowest_entry.day} which they completed in ${Math.round(fastest_entry.time)} min 
+            and ${Math.round(60*(slowest_entry.time-Math.round(slowest_entry.time)))} seconds... That's ${difference} min slower that their best time! Tuf.`)
 
 
     //ranking out of total

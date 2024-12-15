@@ -215,13 +215,14 @@ body{
     flex-direction: column;
     background-color: #F7F7F0;
     gap: 30px;
-    padding: 20px;
+    padding: 50px 30px;
     min-width:300px;
     width: fit-content;
     max-width: 90%;
     height: fit-content;
     max-height: 80vh;
     overflow-y: auto; 
+    margin-bottom: 100px;
     scrollbar-width: none;
 }
 .card .face{
