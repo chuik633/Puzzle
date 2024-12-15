@@ -4,13 +4,16 @@ const calWidth = Math.min(window.innerWidth -20,600)
 const today = new Date();
 let today_date = today.getDate();
 let viewMode;
+let flattened_day_data=[]
 let day_data=[]
 let advent_puzzler_names;
+let highlight_container;
 
 
 
 function driver_christmasPuzzles(data){
     app.attr('class', 'advent')
+    flattened_day_data=[]
     
     day_data = data.map(d=>{
         let day_entry =  {
@@ -25,7 +28,18 @@ function driver_christmasPuzzles(data){
                     let parsedTime = parseInt(min)+ parseInt(sec)/60
                     parsedTime= Math.round(parsedTime * 100) / 100;
                     day_entry[name] = parsedTime
+                    if(parsedTime == NaN){
+                        continue;
+                    }
                     day_entry.all_times.push(parsedTime)
+                    flattened_day_data.push(
+                        {
+                            day:parseInt(d.Day),
+                            name:name,
+                            time:parsedTime
+
+                        }
+                    )
                     
                     if(parsedTime < day_entry["fastest"]["time"]){
                         day_entry["fastest"]["time"]=parsedTime
@@ -38,11 +52,12 @@ function driver_christmasPuzzles(data){
             }
             
         }
-        day_entry['average_time'] = d3.mean(day_entry.all_times)
+        day_entry['average_time'] = d3.mean((day_entry.all_times).filter(d=>d!=undefined))
         return day_entry
         
     })
    
+    console.log(day_data)
     layout_header()
     
     layout_puzzle_difficulty(day_data)
@@ -102,7 +117,7 @@ function layout_header(){
             const selected_option = d3.select(this).property('value');
             set_view_mode(selected_option);
         });
-    
+
         option.append('span').attr('class', 'radio-button');
         option.append('div').attr('class', 'radio-value').text(viewOption);
     }
@@ -114,8 +129,9 @@ function layout_header(){
 
 
 function layout_puzzle_difficulty(data){
+    const allTimesEver = data.map(d=> Math.max(...d.all_times.filter(time => Number.isFinite(time))))
     const fastest_time = Math.min(...data.map(d=> d.fastest.time))
-    const slowest_time = Math.max(...data.map(d=> Math.max(...d.all_times.filter(time => time !== undefined))))
+    const slowest_time = Math.max(...allTimesEver)
     const opacityScale = d3.scaleLinear().domain([fastest_time, slowest_time-2]).range([0,1])
     function colorScale(avg_time){
         function hexToRgbA(hex, opacity) {
@@ -131,6 +147,7 @@ function layout_puzzle_difficulty(data){
     }
 
     const line_charg_height = 50
+    console.log(slowest_time, fastest_time)
     const yScale = d3.scaleLinear().domain([slowest_time,fastest_time]).range([0, line_charg_height])
     const xScale = d3.scaleLinear().domain([0,24]).range([0,calWidth])
     const line_svg = plot_container.append('svg')
@@ -140,7 +157,10 @@ function layout_puzzle_difficulty(data){
     const line = d3.line()
         .x((d) => xScale(d.day))
         .y((d) => yScale(d.average_time));
-    
+
+
+    const today_data = data.filter(d => d.day <= today_date && d.average_time!=undefined)
+    console.log(today_data.map(d=>yScale(d.average_time)))
     line_svg.append('path')
         .datum(data.filter(d => d.day <= today_date && d.average_time!=undefined))  // Pass the entire dataset here
         .attr('stroke', '#FF4E20')
@@ -152,7 +172,7 @@ function layout_puzzle_difficulty(data){
         .enter().append('circle')
         .attr('class', d=>'day-'+d.day)
         .attr('cx', (d) => xScale(d.day))
-        .attr('cy', (d) =>  yScale(d.average_time))
+        .attr('cy', (d) => yScale(d.average_time))
         .attr('r', 2)
         .attr('stroke', 'black')
         .attr('fill', d=> colorScale(d.average_time))
@@ -175,8 +195,8 @@ function layout_puzzle_difficulty(data){
     
     const svg = plot_container.append('svg')
         .attr('width', calWidth)
-        .attr("height", calWidth)
-        .attr('viewBox', [0,0,calWidth,calWidth])
+        .attr("height", calSize*4 + 20)
+        .attr('viewBox', [0,0,calWidth,calSize*4 + 20])
     
     const dayText = ['sun', "mon", 'tue', "wed", "th", "fri", "sa"]
     svg.selectAll('text.day-label')  
@@ -190,6 +210,7 @@ function layout_puzzle_difficulty(data){
         .attr('stroke', 'black')
         .attr('stroke-width', .8)
         .style('text-anchor', 'middle') 
+        .style('pointer-events', 'none') 
         .attr('rx',5)
         .attr('ry', 5)
         .attr('fill', "#F7F7F0")
@@ -216,14 +237,24 @@ function layout_puzzle_difficulty(data){
             if(d.average_time==undefined){
                 return "#F7F7F0"
             }
-            return  colorScale(d.average_time)
+            return colorScale(d.average_time)
            })
         .attr('stroke', 'black')
         .attr('stroke-width', .8)
         .attr('rx',5)
         .attr('ry', 5)
-        .on('click', (event, d)=>{
-            console.log('day clicked', d)
+        .on('mouseover',function (event,d){
+            d3.select(this).attr('stroke-width', 2)
+        })
+        .on('mouseleave',function (event,d){
+            d3.select(this).attr('stroke-width', .8)
+        })
+        .on('click', (event,d)=>{
+            console.log('selecting', d)
+            plot_container.selectAll("div.highlight-container").remove()
+            const highlight_container = plot_container.append('div').attr('class', 'highlight-container')
+            const puzzleData = flattened_day_data.filter(d2=>d2.day == d.day)
+            layoutHighScoreBarChart(highlight_container, puzzleData, 'name', 'time', width, height)
         })
        
     dayblock.append('text')
@@ -232,6 +263,7 @@ function layout_puzzle_difficulty(data){
         .attr('y', d=> dayScale(d.day)[1]+15 + calSize / 2)  
         .style('text-anchor', 'middle')  
         .style('dominant-baseline', 'middle') 
+        .style('pointer-events', 'none') 
         .text(d => d.day);
 }
 

@@ -1,7 +1,7 @@
 *{
     box-sizing: border-box;
     font-family: 'Courier New', Courier, monospace;
-    color: #2225D8;
+    color: black;
     margin:0px;
 }
 body{
@@ -26,19 +26,19 @@ body{
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border-bottom: 1px solid #2225D8;
+    border-bottom: 1px solid black;
 }
 
 .title{
     width: 100%;
     padding: 10px;
-    border-bottom: 1px solid #2225D8;
+    border-bottom: 1px solid black;
 }
 
 #sidebar{
     width: 300px;
     height: 100%;
-    border-right: 1px solid #2225D8;
+    border-right: 1px solid black;
 }
 
 
@@ -105,15 +105,15 @@ canvas{
     /* pointer-events: none; */
 }
 text{
-    fill: #2225D8 ;
+    fill: black ;
 }
 
 .tick{
-    fill:#2225D8 ;
+    fill:black ;
 }
 .domain, line{
-    stroke:#2225D8 ;
+    stroke:black ;
 }
 h2{
-    color: #2225D8;
+    color: black;
 }

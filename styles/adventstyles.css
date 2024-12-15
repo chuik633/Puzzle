@@ -29,6 +29,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    height:fit-content;
+    padding:0px;
 }
 
 .day-label{
@@ -36,7 +38,6 @@
     font-weight: 100;
     text-align: center;
 
-    
     font-family:'Courier New', Courier, monospace
 }
 .cal-num-label{
@@ -127,4 +128,8 @@
     text-align: center;
     
 
+}
+.highlight-container{
+    width: 100%;
+    height: fit-content;
 }
