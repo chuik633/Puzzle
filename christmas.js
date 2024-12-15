@@ -207,7 +207,7 @@ function layout_puzzle_difficulty(data){
         .text(d=> dayText[d-1])
         .attr('x', d=> dayScale(d)[0]+ calSize / 2)
         .attr('y', d=> dayScale(d)[1]+ 10)
-        .attr('stroke', 'black')
+        .attr('stroke', 'none')
         .attr('stroke-width', .8)
         .style('text-anchor', 'middle') 
         .style('pointer-events', 'none') 
@@ -250,11 +250,15 @@ function layout_puzzle_difficulty(data){
             d3.select(this).attr('stroke-width', .8)
         })
         .on('click', (event,d)=>{
-            console.log('selecting', d)
+
             plot_container.selectAll("div.highlight-container").remove()
             const highlight_container = plot_container.append('div').attr('class', 'highlight-container')
             const puzzleData = flattened_day_data.filter(d2=>d2.day == d.day)
-            layoutHighScoreBarChart(highlight_container, puzzleData, 'name', 'time', width, height)
+            layoutPuzzleDayInfo(highlight_container,puzzleData, width, height, personColorScale)
+
+         
+
+        
         })
        
     dayblock.append('text')
@@ -262,6 +266,7 @@ function layout_puzzle_difficulty(data){
         .attr('x',d=> dayScale(d.day)[0]+calSize / 2) 
         .attr('y', d=> dayScale(d.day)[1]+15 + calSize / 2)  
         .style('text-anchor', 'middle')  
+        .attr('stroke','none')
         .style('dominant-baseline', 'middle') 
         .style('pointer-events', 'none') 
         .text(d => d.day);
@@ -290,6 +295,7 @@ function layout_puzzle_leaderboard(data){
         .style('width', calSize + 'px')
         .style('height', calSize + 'px')
         .style('color', 'black')
+        .attr('stroke','none')
         .style('text-anchor', 'middle')
         .text(d => dayText[d - 1])
         .style('left', d => `${dayScale(d)[0]}px`) 

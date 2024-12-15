@@ -6,6 +6,15 @@
     font-family: Cygnet;
     src: url('Cygnet.ttf');
 }
+body{
+    position: fixed;
+    overflow-x:hidden;
+    overflow-y:auto;
+    width: 100vw;
+    height: 100vh;
+    gap:0px !important;
+    scrollbar-width: none; 
+}
 
 
 #app.advent{
@@ -16,6 +25,9 @@
     padding-top: 200px;
 
 }
+.advent .svg-container{
+    width: fit-content;
+}
 
 .face{
     z-index: 10;
@@ -25,12 +37,18 @@
 .advent .plot-container{
     top: 20px;
     position: relative;
+    gap: 20px;
     max-width: 800px;
     display: flex;
+    flex-wrap:nowrap;
     flex-direction: column;
     align-items: center;
-    height:fit-content;
+    height:100%;
+    scrollbar-width: none; 
+    overflow: auto;
+
     padding:0px;
+    padding-bottom: 300px;
 }
 
 .day-label{
@@ -132,4 +150,49 @@
 .highlight-container{
     width: 100%;
     height: fit-content;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+
+    gap: 20px;
+    position: relative;
+    max-width: 800px;
+}
+.flex-row{
+    display:flex;
+    flex-direction:row;
+    gap: 10px;
+
+}
+.barchart-title{
+    font-size: 14px;
+    stroke: none;
+    font-weight: 100;
+    width: fit-content;
+}
+.plot-container svg{
+    flex-shrink:0;
+}
+
+.single-puzzle-stats-container{
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+    position: relative;
+
+}
+
+.round{
+    border-radius: 50%;
+}
+
+.highlight-container p{
+    font-size:8px;
+}
+
+.highlight-container .text-container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
