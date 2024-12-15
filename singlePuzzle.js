@@ -188,15 +188,16 @@ function getPuzzleSummary(puzzleData) {
 
 
 function layoutPuzzleDayInfo(plot_container, puzzleData, width, height, colorScale){
+    width =Math.min((window.innerWidth -20), 800)
     const day = puzzleData[0].day
     plot_container.style('border-top', '.5px solid black')
-    const top_row = plot_container.append('div').attr('class','flex-row')
+    const top_row = plot_container.append('div').attr('class','flex-row').style('width', "100%")
     top_row.append('img').attr('src',`/assets/puzzles/AdventCalendar3 ${day}.png`) .style('height', height/4+'px').style('border', '.5px solid black')
     const textContainer = top_row.append('div').attr('class', 'text-container').style('width', width/2+'px')
     textContainer.append('h2').text(`December ${day}th`).attr('class', 'barchart-title');
     textContainer.append('p').text(getPuzzleSummary(puzzleData))
 
-    const second_row = plot_container.append('div').attr('class','flex-row')
+    const second_row = plot_container.append('div').attr('class','flex-row').style('width', "100%")
     layoutHighScoreBarChart(second_row, puzzleData, 'name', 'time', width/2-10, Math.min(height, width/2))
     layoutCircleData(second_row,  puzzleData, width/2,  Math.min(height, width/2), colorScale)
     
