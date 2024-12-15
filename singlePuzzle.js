@@ -21,6 +21,10 @@ function layoutHighScoreBarChart(plot_container, barChartData, xCategory, yCateg
         .attr('x', d => xScale(d[xCategory]))
         .attr('y', d => yScale(d[yCategory]))
         .attr('width', xScale.bandwidth())
+        .attr('stroke', 'black')
+        .attr('stroke-width', .8)
+        .attr('rx',5)
+        .attr('ry', 5)
         .attr('height', d => height - padding - yScale(d[yCategory]))
         .attr('fill', d => personColorScale(d[xCategory]));
 
@@ -37,11 +41,12 @@ function layoutHighScoreBarChart(plot_container, barChartData, xCategory, yCateg
 
     svg.append("g")
         .attr('transform', `translate(0, ${height - padding})`)
-        .call(d3.axisBottom(xScale));
+        .call(d3.axisBottom(xScale) .tickSize(0) ).select("path")
+        .remove()
 
-    svg.append("g")
-        .attr('transform', `translate(${padding}, 0)`)
-        .call(d3.axisLeft(yScale));
+    // svg.append("g")
+    //     .attr('transform', `translate(${padding}, 0)`)
+    //     .call(d3.axisLeft(yScale));
 
 
 
