@@ -217,7 +217,7 @@ body{
     background-color: #F7F7F0;
     gap: 30px;
     padding: 50px 30px;
-    min-width:300px;
+    min-width:200px;
     width: fit-content;
     max-width: 90%;
     max-width:600px;
@@ -226,6 +226,11 @@ body{
     overflow-y: auto; 
     margin-bottom: 100px;
     scrollbar-width: none;
+}
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%;
+    }
 }
 .card .face{
     position:relative;
