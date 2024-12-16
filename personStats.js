@@ -25,7 +25,7 @@ function personStats(popup_container, flattened_data, name){
     //plot of their data across the days for difficutly
     const row2 = card.append('div').attr('class', 'flex-row')
     row2.append('img')
-        .attr('src',`/assets/puzzles/AdventCalendar3 ${fastest_entry.day}.png`)
+        .attr('src',`./assets/puzzles/AdventCalendar3 ${fastest_entry.day}.png`)
         .style('height', 100+'px').style('border', '.5px solid black')
       
     const text_col2 = row2.append('div').attr('class', 'flex-col')
