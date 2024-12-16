@@ -203,3 +203,4 @@ function layoutPuzzleDayInfo(plot_container, puzzleData, width, height, colorSca
     
 
 }
+

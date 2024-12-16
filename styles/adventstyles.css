@@ -215,7 +215,7 @@ body{
     display: flex;
     flex-direction: column;
     background-color: #F7F7F0;
-    gap: 30px;
+    gap: 40px;
     padding: 50px 30px;
     min-width:200px;
     width: fit-content;

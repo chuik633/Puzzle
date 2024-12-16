@@ -161,7 +161,7 @@ function layout_legend(){
         })
         .on('click', (event,d)=>{
             popup_container.style('display', 'flex')
-            personStats(popup_container, flattened_day_data, d)
+            personStats(popup_container, flattened_day_data, d, personColorScale)
         })
         .append('div')
             .text(d=>d)
