@@ -144,7 +144,7 @@ function layout_legend(){
         .attr('class', d=> 'face face-'+ d)
         .on('mouseover', (event, d)=> {
             d3.selectAll('.legend-container .face').style('background','none').style('border', 'none')
-            d3.select('.legend-container .face-'+d).style('background',personColorScale(d)).style('border', '1px solid #2225D8')
+            d3.select('.legend-container .face-'+d).style('background',personColorScale(d)).style('border', '1px solid black')
             for(const name of advent_puzzler_names){
                 d3.selectAll('.'+name).style('opacity',.2)
 

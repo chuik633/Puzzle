@@ -188,7 +188,7 @@ function getPuzzleSummary(puzzleData) {
 
 
 function layoutPuzzleDayInfo(plot_container, puzzleData, width, height, colorScale){
-    width =Math.min((window.innerWidth -20), 800)
+    width =Math.min((window.innerWidth -20), 600)
     const day = puzzleData[0].day
     plot_container.style('border-top', '.5px solid black')
     const top_row = plot_container.append('div').attr('class','flex-row').style('width', "100%")

@@ -104,16 +104,3 @@ canvas{
     position: relative;
     /* pointer-events: none; */
 }
-text{
-    fill: black ;
-}
-
-.tick{
-    fill:black ;
-}
-.domain, line{
-    stroke:black ;
-}
-h2{
-    color: black;
-}
