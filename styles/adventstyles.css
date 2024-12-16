@@ -219,7 +219,6 @@ body{
     padding: 50px 30px;
     min-width:200px;
     width: fit-content;
-    max-width: 90%;
     max-width:600px;
     height: fit-content;
     max-height: 80vh;
@@ -228,8 +227,8 @@ body{
     scrollbar-width: none;
 }
 @media (max-width: 768px) {
-    .container {
-        max-width: 90%;
+    .card {
+        max-width: 90vw;
     }
 }
 .card .face{

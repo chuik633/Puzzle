@@ -51,7 +51,7 @@ function personStats(popup_container, flattened_data, name,personColorScale){
     //consistency compute standard deviatios
     //do a line plot
     const plot_width = Math.min(window.innerWidth*.9 - 60, 600 - 60)
-    const plot_height = plot_width/4
+    const plot_height = Math.max(plot_width/4,150)
     const row3 = card.append('div').attr('class', 'flex-row')
     line_plot_all(row3,`${name}'s times` ,flattened_data,name, 'day', 'time', plot_width, plot_height,personColorScale)
 
@@ -256,7 +256,6 @@ function distribution_plot(container, data, plot_width, plot_height, person_name
         .attr('y1', padding.top)
         .attr('y2', plot_height - padding.bottom)
         .attr('stroke', 'black')
-        .attr('stroke-dasharray', '4 4');
 
     const rolledup_data = d3.rollup(data,
         v => d3.mean(v, d => d.time), 
