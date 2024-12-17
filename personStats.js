@@ -42,7 +42,7 @@ function personStats(popup_container, flattened_data, name,personColorScale){
     const difference = Math.round((slowest_entry.time - fastest_entry.time)*10)/10
     const text_col3 = row2.append('div').attr('class', 'flex-col')
     text_col3.append('h3').text('WORST PUZZLE')
-    text_col3.append('p').text(`Unfortunately, ${name} struggled with December ${slowest_entry.day} which they completed in ${Math.floor(fastest_entry.time)} min 
+    text_col3.append('p').text(`Unfortunately, ${name} struggled with December ${slowest_entry.day} which they completed in ${Math.floor(slowest_entry.time)} min 
             and ${Math.floor(60*(slowest_entry.time-Math.floor(slowest_entry.time)))} seconds... That's ${difference} min slower that their best time! Tuf.`)
 
 
