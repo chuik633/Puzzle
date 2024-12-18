@@ -9,7 +9,7 @@ function layoutHighScoreBarChart(plot_container, barChartData, xCategory, yCateg
 
     const xScale = d3.scaleBand()
         .domain(barChartData.map(d => d[xCategory]))
-        .range([padding, width - padding])
+        .range([0, width])
         .padding(0.1);
 
     const yScale = d3.scaleLinear()
@@ -167,7 +167,7 @@ function getPuzzleSummary(puzzleData) {
     const sortedData = puzzleData.sort((a, b) => b.time - a.time).reverse();
   
 
-    let summary_text = `On Day ${sortedData[0].day}, ${sortedData[0].name} 
+    let summary_text = `On the ${sortedData[0].day}th day of Christmas, ${sortedData[0].name} 
         was the fastest with time of ${sortedData[0].time} minutes.
         `
     if(sortedData.length>1){
@@ -187,8 +187,14 @@ function getPuzzleSummary(puzzleData) {
 }
 
 
-function layoutPuzzleDayInfo(plot_container, puzzleData, width, height, colorScale){
-    width =Math.min((window.innerWidth -20), 600)
+function layoutPuzzleDayInfo(popup_container, puzzleData, width, height, colorScale){
+    width = Math.min((window.innerWidth -15), 600)
+    const plot_container = popup_container.append('div').attr('class', "card")
+    popup_container.on('click', ()=>{
+        popup_container.selectAll("*").remove()
+        popup_container.style('display', 'none')
+    })
+
     const day = puzzleData[0].day
     plot_container.style('border-top', '.5px solid black')
     const top_row = plot_container.append('div').attr('class','flex-row').style('width', "100%")
@@ -197,9 +203,9 @@ function layoutPuzzleDayInfo(plot_container, puzzleData, width, height, colorSca
     textContainer.append('h2').text(`December ${day}th`).attr('class', 'barchart-title');
     textContainer.append('p').text(getPuzzleSummary(puzzleData))
 
-    const second_row = plot_container.append('div').attr('class','flex-row').style('width', "100%")
-    layoutHighScoreBarChart(second_row, puzzleData, 'name', 'time', width/2-10, Math.min(height, width/2))
-    layoutCircleData(second_row,  puzzleData, width/2,  Math.min(height, width/2), colorScale)
+  
+    layoutHighScoreBarChart(plot_container, puzzleData, 'name', 'time', width/2-10, Math.min(height, width/2))
+    layoutCircleData(plot_container,  puzzleData, width/2,  Math.min(height, width/2), colorScale)
     
 
 }

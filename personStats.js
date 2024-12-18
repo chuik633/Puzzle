@@ -14,7 +14,7 @@ function personStats(popup_container, flattened_data, name,personColorScale){
 
     //text row 1
     const row1 = card.append('div').attr('class', 'flex-row')
-    row1.append('div').attr('class', 'face face-'+name).style('width', `${100}px`).style('height', `${100}px`).style('flex-shrink', 0)
+    row1.append('div').attr('class', 'border face face-'+name).style('width', `${100}px`).style('height', `${100}px`).style('flex-shrink', 0)
     showFaces([name])
    
     const text_col = row1.append('div').attr('class', 'flex-col')

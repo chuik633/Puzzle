@@ -8,6 +8,7 @@ let flattened_day_data=[]
 let day_data=[]
 let advent_puzzler_names;
 let highlight_container;
+let popup_container;
 
 
 
@@ -131,7 +132,7 @@ function layout_header(){
 }
 
 function layout_legend(){
-    const popup_container = app.append('div').attr('class', "popup-container").style('display', 'none')
+     popup_container = app.append('div').attr('class', "popup-container").style('display', 'none')
     const legendSize = 20
     const legend = app.append('div').attr('class', 'legend-container')
     if(window.innerWidth > 800){
@@ -299,10 +300,13 @@ function layout_puzzle_difficulty(data){
         })
         .on('click', (event,d)=>{
 
-            plot_container.selectAll("div.highlight-container").remove()
-            const highlight_container = plot_container.append('div').attr('class', 'highlight-container')
+            // plot_container.selectAll("div.highlight-container").remove()
+            // const highlight_container = plot_container.append('div').attr('class', 'highlight-container')
+            popup_container.selectAll("*").remove()
+            popup_container.style('display', 'flex')
             const puzzleData = flattened_day_data.filter(d2=>d2.day == d.day)
-            layoutPuzzleDayInfo(highlight_container,puzzleData, width, height, personColorScale)
+
+            layoutPuzzleDayInfo(popup_container,puzzleData, width, height, personColorScale)
 
          
 

@@ -211,6 +211,7 @@ body{
 
 .card{
     border-radius: 5px;
+    align-items: center;
     border: 1px solid black;
     display: flex;
     flex-direction: column;
@@ -231,9 +232,12 @@ body{
         max-width: 90vw;
     }
 }
+.border{
+    border:1px solid black;
+}
 .card .face{
     position:relative;
-    border:1px solid black;
+    /* border:1px solid black; */
     border-radius: 50%;
 }
 .card h2{

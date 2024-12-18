@@ -138,6 +138,7 @@ function christmas_circles(data, container, plot_width, plot_height){//data has 
 
 function createCustomAxes(container, plotWidth, plotHeight) {
     const svg = container.append("svg")
+        .attr('z-index', 10)
         .attr("width", plotWidth)
         .attr("height", plotHeight);
 
