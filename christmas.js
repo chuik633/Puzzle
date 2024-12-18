@@ -52,7 +52,9 @@ function driver_christmasPuzzles(data){
             }
             
         }
+
         day_entry['average_time'] = d3.mean((day_entry.all_times).filter(d=>d!=undefined))
+        day_entry['variance'] = Math.sqrt(d3.mean((day_entry.all_times).filter(d=>d!=undefined).map(d => Math.pow(d - day_entry['average_time'], 2))));
         return day_entry
         
     })
@@ -191,6 +193,7 @@ function layout_puzzle_difficulty(data){
         return hexToRgbA("#FF4E20", opacity)
     }
 
+    christmas_circles(data, plot_container, calWidth, calWidth)
     const line_charg_height = 50
     console.log(slowest_time, fastest_time)
     const yScale = d3.scaleLinear().domain([slowest_time,fastest_time]).range([0, line_charg_height])

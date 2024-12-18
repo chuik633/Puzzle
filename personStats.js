@@ -135,8 +135,13 @@ function line_plot_all(container, title, data, input_name, xCategory, yCategory,
     const padding = { left: 20, bottom: 0, top: 20, right: 0 };
     const names = Array.from(new Set(data.map(d=>d.name)))
 
-    const allXValues = data.map(d => d[xCategory]);
-    const allYValues = data.map(d => d[yCategory]);
+    console.log(xCategory, yCategory)
+    console.log(data)
+    const filtered_data = data.filter(d=>!isNaN(d[yCategory])&& !isNaN(d[xCategory]));
+    console.log(filtered_data)
+    const allXValues = filtered_data.map(d => d[xCategory]);
+    const allYValues = filtered_data.map(d => d[yCategory])
+    // const allYValues = data.map(d => d[yCategory]);
 
     const xScale = d3.scaleLinear()
         .domain([Math.min(...allXValues), Math.max(...allXValues)])
@@ -148,7 +153,7 @@ function line_plot_all(container, title, data, input_name, xCategory, yCategory,
     const yScale = d3.scaleLinear()
         .domain([minY-2, maxY+2])
         .range([plot_height - padding.bottom, padding.top]);
-
+console.log("MINY, ",minY, maxY,allYValues)
     
     const line = d3.line()
         .x(d => xScale(d[xCategory]))
@@ -166,7 +171,7 @@ function line_plot_all(container, title, data, input_name, xCategory, yCategory,
         .attr('y', 10)
     
     for(const name of names){
-        const person_data = data.filter(d=>d.name == name).sort((a, b) => b.day - a.day).reverse();
+        const person_data = filtered_data.filter(d=>d.name == name).sort((a, b) => b.day - a.day).reverse();
         line_svg.append('path')
             .datum(person_data.filter(d => d[xCategory] !== undefined && d[yCategory] !== undefined))
             .attr('stroke', d=>personColorScale(name))
@@ -181,7 +186,7 @@ function line_plot_all(container, title, data, input_name, xCategory, yCategory,
             .attr('fill', 'none')
             .attr('d', line);
     }
-    const person_data = data.filter(d=>d.name == input_name).sort((a, b) => b.day - a.day).reverse();
+    const person_data = filtered_data.filter(d=>d.name == input_name).sort((a, b) => b.day - a.day).reverse();
     line_svg.selectAll("circle")
         .data(person_data.filter(d => d[xCategory] !== undefined && d[yCategory] !== undefined))
         .enter()
