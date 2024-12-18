@@ -193,7 +193,7 @@ function layout_puzzle_difficulty(data){
         return hexToRgbA("#FF4E20", opacity)
     }
 
-    // christmas_circles(data, plot_container, calWidth, calWidth)
+    
     const line_charg_height = 50
     console.log(slowest_time, fastest_time)
     const yScale = d3.scaleLinear().domain([slowest_time,fastest_time]).range([0, line_charg_height])
@@ -318,6 +318,8 @@ function layout_puzzle_difficulty(data){
         .style('dominant-baseline', 'middle') 
         .style('pointer-events', 'none') 
         .text(d => d.day);
+
+    christmas_circles(data, plot_container, calWidth, calWidth)
 }
 
 function layout_puzzle_leaderboard(data){  

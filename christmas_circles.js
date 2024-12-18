@@ -133,100 +133,87 @@ function christmas_circles(data, container, plot_width, plot_height){//data has 
         d.y = event.y;
         sim.alpha(1).restart(); 
     }
-    createCustomAxes(plot_container, plot_width, plot_height, padding)
+    createCustomAxes(plot_container, plot_width, plot_height)
 }
 
-function createCustomAxes(container, plot_width, plot_height, padding) {
-    // Horizontal Axis: Low Variance (left) to High Variance (right)
-    const xAxisGroup = container.append('div')
-        .style('width', plot_width + 'px')
-        .style('height', '20px')
-        .style('top', plot_height/2+ 'px');
+function createCustomAxes(container, plotWidth, plotHeight) {
+    const svg = container.append("svg")
+        .attr("width", plotWidth)
+        .attr("height", plotHeight);
 
-    // Axis line
-    xAxisGroup.append('div')
-        .style('position', 'absolute')
-        .style('left', padding.left + 'px')
-        .style('top', plot_height /2+'px')
-        .style('width', (plot_width - padding.left - padding.right) + 'px')
-        .style('height', '1px')
-        .style('background-color', 'black');
+    const centerX = plotWidth / 2;
+    const centerY = plotHeight / 2;
 
-    // Left arrow
-    xAxisGroup.append('div')
-        .style('position', 'absolute')
-        .style('left', padding.left - 10 + 'px')
-        .style('top', '5px')
-        .style('width', '0px')
-        .style('height', '0px')
-        .style('border-left', '5px solid transparent')
-        .style('border-right', '5px solid transparent')
-        .style('border-bottom', '10px solid black');
+    svg.append("line")
+        .attr("x1", 10)
+        .attr("y1", centerY)
+        .attr("x2", plotWidth - 10)
+        .attr("y2", centerY)
+        .attr("stroke", "black")
+        .attr("stroke-width", 1);
 
-    // Right arrow
-    xAxisGroup.append('div')
-        .style('position', 'absolute')
-        .style('left', plot_width/2 + 'px')
-        .style('top', '5px')
-        .style('width', '0px')
-        .style('height', '0px')
-        .style('border-left', '5px solid transparent')
-        .style('border-right', '5px solid transparent')
-        .style('border-top', '10px solid black');
+    svg.append("polygon")
+        .attr("points", "10," + (centerY - 5) + " 10," + (centerY + 5) + " 0," + centerY)
+        .attr("fill", "black");
 
-    // Labels for Low and High Variance
-    xAxisGroup.append('span')
-        .style('position', 'absolute')
-        .style('left', plot_width/2 + 'px')
-        .style('top', '5px')
-        .style('font-family', 'Courier New')
-        .style('font-size', '12px')
-        .text('Low Variance');
+    svg.append("polygon")
+        .attr("points", 
+            (plotWidth - 10) + "," + (centerY - 5) + " " +
+            (plotWidth - 10) + "," + (centerY + 5) + " " +
+            (plotWidth) + "," + centerY)
+        .attr("fill", "black");
 
-    xAxisGroup.append('span')
-        .style('position', 'absolute')
-        .style('left', plot_width/2+ 'px')
-        .style('top', '5px')
-        .style('font-family', 'Courier New')
-        .style('font-size', '12px')
-        .text('High Variance');
+    svg.append("text")
+        .attr("x", 15)
+        .attr("y", centerY - 10)
+        .attr("text-anchor", "start")
+        .attr("font-family", "Courier New")
+        .attr("font-size", 10)
+        .text("Low Variance");
 
-    // Vertical Axis: Fastest Times (top) to Slowest Times (bottom)
-    const yAxisGroup = container.append('div')
-        .style('position', 'absolute')
-        .style('left', padding.left + 'px')
-        .style('top', padding.top + 'px')
-        .style('width', '20px')
-        .style('height', plot_height - padding.bottom - padding.top + 'px');
+    svg.append("text")
+        .attr("x", plotWidth - 15)
+        .attr("y", centerY - 10)
+        .attr("text-anchor", "end")
+        .attr("font-family", "Courier new")
+        .attr("font-size", 10)
+        .text("High Variance");
+    svg.append("line")
+        .attr("x1", centerX)
+        .attr("y1", 10)
+        .attr("x2", centerX)
+        .attr("y2", plotHeight - 10)
+        .attr("stroke", "black")
+        .attr("stroke-width", 1);
 
-    // Axis line
-    yAxisGroup.append('div')
-        .style('position', 'absolute')
-        .style('left', '10px')
-        .style('top', '0')
-        .style('width', '2px')
-        .style('height', (plot_height - padding.bottom - padding.top) + 'px')
-        .style('background-color', 'black');
+    svg.append("polygon")
+        .attr("points", 
+            (centerX - 5) + ",10 " +
+            (centerX + 5) + ",10 " +
+            centerX + ",0")
+        .attr("fill", "black");
 
-    // Top arrow
-    yAxisGroup.append('div')
-        .style('position', 'absolute')
-        .style('left', '5px')
-        .style('top', padding.top - 10 + 'px')
-        .style('width', '0px')
-        .style('height', '0px')
-        .style('border-left', '5px solid transparent')
-        .style('border-right', '5px solid transparent')
-        .style('border-bottom', '10px solid black');
+    svg.append("polygon")
+        .attr("points", 
+            (centerX - 5) + "," + (plotHeight - 10) + " " +
+            (centerX + 5) + "," + (plotHeight - 10) + " " +
+            centerX + "," + plotHeight)
+        .attr("fill", "black");
 
-    // Bottom arrow
-    yAxisGroup.append('div')
-        .style('position', 'absolute')
-        .style('left', '5px')
-        .style('top', plot_height - padding.bottom + 5 + 'px')
-        .style('width', '0px')
-        .style('height', '0px')
-        .style('border-left', '5px solid transparent')
-        .style('border-right', '5px solid transparent')
-        .style('border-top', '10px solid black');
+    // Y-Axis Labels
+    svg.append("text")
+        .attr("x", centerX + 10)
+        .attr("y", 20)
+        .attr("text-anchor", "start")
+        .attr("font-family", "Courier New")
+        .attr("font-size", 10)
+        .text("Fastest Times");
+
+    svg.append("text")
+        .attr("x", centerX + 10)
+        .attr("y", plotHeight - 15)
+        .attr("text-anchor", "start")
+        .attr("font-family", "Courier New")
+        .attr("font-size", 10)
+        .text("Slowest Times");
 }
