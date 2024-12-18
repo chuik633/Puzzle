@@ -65,13 +65,14 @@ function driver_christmasPuzzles(data){
     layout_header()
     layout_legend()
     
-    layout_puzzle_difficulty(day_data)
+    
 
     // let apuzzler_data = {}
 
     
 
     personColorScale = d3.scaleOrdinal().domain(advent_puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
+    layout_puzzle_difficulty(day_data)
     // const advent_puzzler_names = data[0].slice(1,data[0].length)
     // console.log('puzzler names', advent_puzzler_names)
     // for(const name of advent_puzzler_names){
@@ -196,7 +197,7 @@ function layout_puzzle_difficulty(data){
 
     
     const line_charg_height = 50
-    console.log(slowest_time, fastest_time)
+    
     const yScale = d3.scaleLinear().domain([slowest_time,fastest_time]).range([0, line_charg_height])
     const xScale = d3.scaleLinear().domain([0,24]).range([0,calWidth])
     const line_svg = plot_container.append('svg')
@@ -209,7 +210,8 @@ function layout_puzzle_difficulty(data){
 
 
     const today_data = data.filter(d => d.day <= today_date && d.average_time!=undefined)
-    console.log(today_data.map(d=>yScale(d.average_time)))
+  
+    
     line_svg.append('path')
         .datum(data.filter(d => d.day <= today_date && d.average_time!=undefined))  // Pass the entire dataset here
         .attr('stroke', '#FF4E20')
@@ -308,8 +310,6 @@ function layout_puzzle_difficulty(data){
 
             layoutPuzzleDayInfo(popup_container,puzzleData, width, height, personColorScale)
 
-         
-
         
         })
        
@@ -337,7 +337,8 @@ function layout_puzzle_leaderboard(data){
     const svg_div = plot_container.append('div')
         .attr('class', 'svg-div')
         .style('width', calWidth + 'px')
-        .style("height", calWidth+ 'px')
+        .style("height", calSize*5 + 'px')
+        .style('flex-shrink', 0)
         .style('position', 'relative')
     
     const dayText = ['sun', "mon", 'tue', "wed", "th", "fri", "sa"]
@@ -380,6 +381,6 @@ function layout_puzzle_leaderboard(data){
         })
         .style("border", ".5px solid black")
         .style('border-radius', '5px')
-
+     christmas_circles_faces(flattened_day_data, plot_container, calWidth, calWidth, personColorScale)
         
 }
