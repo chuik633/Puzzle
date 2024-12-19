@@ -39,7 +39,7 @@ body{
     top: 20px;
     position: relative;
     gap: 20px;
-    max-width: 800px;
+    width: 100vw;
     display: flex;
     flex-wrap:nowrap;
     flex-direction: column;
