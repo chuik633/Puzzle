@@ -71,7 +71,7 @@ function driver_christmasPuzzles(data){
 
     
 
-    personColorScale = d3.scaleOrdinal().domain(advent_puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E"])
+    personColorScale = d3.scaleOrdinal().domain(advent_puzzler_names).range(["#c2d968", "#aacdfe", "#ffcafa", "#ff4e20", "#3C40FE", "#3F8B4E", "#FBC524", "#FE6726", "#FC8D72", "#80D8A9"])
     layout_puzzle_difficulty(day_data)
     // const advent_puzzler_names = data[0].slice(1,data[0].length)
     // console.log('puzzler names', advent_puzzler_names)
