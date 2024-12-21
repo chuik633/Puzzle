@@ -305,3 +305,16 @@ body{
 
     border:.5px solid black;
 }
+
+.tooltip{
+    position: absolute;
+    width: 100px;
+    z-index: 40;
+    background-color: black;
+}
+
+.tooltip p{
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9px;
+}

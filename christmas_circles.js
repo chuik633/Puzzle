@@ -11,6 +11,7 @@ function christmas_circles(data, container, plot_width, plot_height){//data has 
             .style('width', plot_width+"px").style('height', plot_height+"px").style('position', 'relative')
             // .style('border', '1px solid black')
     const tooltip = plot_container.append('div')
+            .attr('class', 'tooltip')
             .style('position', 'absolute')
             .style('width', '95px')
             .style('z-index', 40)
@@ -58,25 +59,25 @@ function christmas_circles(data, container, plot_width, plot_height){//data has 
                         .style("top", d=>d.y+"px")
                         .style("width", d=>d.size+"px") 
                         .attr("src",d=> `./assets/puzzles/AdventCalendar3 ${d.day}.png`)
-                        .call(d3.drag()  
-                            .on('drag', dragMove)
-                            .on('end', dragEnd)
-                        )
+                        // .call(d3.drag()  
+                        //     .on('drag', dragMove)
+                        //     .on('end', dragEnd)
+                        // )
                         .on('mouseover', (event,d)=>{
                             tooltip
                             .style('display', 'flex')
+                            .style('flex-direction', 'column')
                             .style("top", Math.max(d.y - 30, padding.top+30)+"px")
                             .style("left", Math.max(padding.left + 5,d.x-50)+"px")
-                            .text(`
-                                avg time: ${Math.round(d.average_time*100)/100}
-                                std dev: ${Math.round(d.variance*100)/100}
-                                
-                            
-                            `)
+                    
+                            tooltip.append('p').text(`Day: ${d.day} `)
+                            tooltip.append('p').text(`avg time: ${Math.round(d.average_time*100)/100} `)
+                            tooltip.append('p').text(` std dev: ${Math.round(d.variance*100)/100} `)
                         })
                         .on('mouseleave', (event,d)=>{
                             tooltip
                             .style('display', 'none')
+                            tooltip.selectAll("*").remove()
                             
                         })
                         
@@ -99,25 +100,6 @@ function christmas_circles(data, container, plot_width, plot_height){//data has 
             .style('top', d => Math.max(d.size / 2, Math.min(plot_height - d.size, d.y)) + "px");
     }
 
-    // plot_container.on('click', function () {
-    //     nodes.forEach(d => {
-    //         d.x = Math.random() * (plot_width - img_size*2) + (img_size),
-    //         d.y =  Math.random() * (plot_height - img_size*3) + (img_size*3/2)
-
-    //     });
-
-    //     if(sim){
-    //         sim.stop();  
-
-    //     }
-    //     sim = d3.forceSimulation(nodes)
-    //         .force('collision', d3.forceCollide().radius(d => d.size)) 
-    //         .force('x', d3.forceX(d => d.targetx).strength(0.1)) 
-    //         .force('y', d3.forceY(d=>d.targety).strength(0.1))
-    //         .on("tick", ticked);
-
-    //     sim.restart();  
-    // });
     function dragMove(event, d) {
         d.x = event.x;
         d.y = event.y;

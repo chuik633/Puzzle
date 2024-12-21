@@ -323,7 +323,7 @@ function layout_puzzle_difficulty(data){
         .style('pointer-events', 'none') 
         .text(d => d.day);
 
-    christmas_circles(data, plot_container, calWidth, calWidth)
+    christmas_circles(data, plot_container,Math.max(calWidth,window.innerWidth/2) , Math.max(calWidth,window.innerHeight/2))
 }
 
 function layout_puzzle_leaderboard(data){  
