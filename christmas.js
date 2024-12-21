@@ -29,7 +29,7 @@ function driver_christmasPuzzles(data){
                     let parsedTime = parseInt(min)+ parseInt(sec)/60
                     parsedTime= Math.round(parsedTime * 100) / 100;
                     day_entry[name] = parsedTime
-                    if(parsedTime == NaN){
+                    if(isNaN(parsedTime)){
                         continue;
                     }
                     day_entry.all_times.push(parsedTime)
@@ -54,7 +54,7 @@ function driver_christmasPuzzles(data){
             
         }
 
-        day_entry['average_time'] = d3.mean((day_entry.all_times).filter(d=>d!=undefined))
+        day_entry['average_time'] = d3.mean((day_entry.all_times).filter(d=>d!=undefined || isNaN(d)))
         day_entry['variance'] = Math.sqrt(d3.mean((day_entry.all_times).filter(d=>d!=undefined).map(d => Math.pow(d - day_entry['average_time'], 2))));
         return day_entry
         
