@@ -23,7 +23,9 @@ body{
     flex-direction: column;
     gap: 10px;
     scrollbar-width: none; 
-    overflow: auto;
+    overflow-y: auto;
+
+    overflow-x:hidden;
     align-items: center;
     justify-content: flex-start;
     padding-top: 0px;
