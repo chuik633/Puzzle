@@ -17,9 +17,7 @@ function showFaces(puzzler_names){
         }
         
         if(puzzler_names.includes(name)){
-            console.log("drawing face",name)
             if(!faceElement.classList.contains('displayed')){
-                console.log("here")
                 new p5((p) => sketchFace(p, name, faceElement));
                 faceElement.classList.add('displayed');
             }

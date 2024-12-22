@@ -70,8 +70,8 @@ function layoutCircleData(plot_container,  puzzleData, width, height, colorScale
     // const rScale = d3.scaleSqrt().domain([min_time, max_time]).range([100, 30]);
    
     const areaAvailable = (width * height) / puzzleData.length;
-    const min_radius = Math.sqrt(areaAvailable / Math.PI)/2
-    const max_radius = width/2;
+    const min_radius = 10
+    const max_radius = width/puzzleData.length
     const rScale = d3.scaleSqrt()
         .domain([max_time, min_time])
         .range([min_radius, max_radius]);
@@ -165,11 +165,18 @@ function layoutCircleData(plot_container,  puzzleData, width, height, colorScale
 
 function getPuzzleSummary(puzzleData) {
     const sortedData = puzzleData.sort((a, b) => b.time - a.time).reverse();
-  
+    const sortedDataBest = puzzleData.sort((a, b) => b.best_time - a.best_time).reverse();
+   
 
     let summary_text = `On the ${sortedData[0].day}th day of Christmas, ${sortedData[0].name} 
-        was the fastest with time of ${sortedData[0].time} minutes.
+        had the fastest first attempt time of ${sortedData[0].time} minutes. 
         `
+    if(sortedData[0].name==sortedDataBest[0].name){
+        summary_text+=  `They were so good that they also had the fastest overall time of ${sortedDataBest[0].best_time} min`
+    }else{
+        summary_text+=  `However, ${sortedDataBest[0].name} holds the title for their fastest time of ${sortedDataBest[0].best_time} min after ${sortedDataBest[0].all_attempt_times.length} attempts.`
+    }
+   
     if(sortedData.length>1){
         const difference = sortedData[1].time-sortedData[0].time
         let closeness_word = ''
@@ -187,7 +194,8 @@ function getPuzzleSummary(puzzleData) {
 }
 
 
-function layoutPuzzleDayInfo(popup_container, puzzleData, width, height, colorScale){
+function layoutPuzzleDayInfo(popup_container, puzzleData,flattened_day_data, width, height, colorScale){
+    
     width = Math.min((window.innerWidth -15), 600)
     const plot_container = popup_container.append('div').attr('class', "card")
     popup_container.on('click', ()=>{
@@ -204,8 +212,10 @@ function layoutPuzzleDayInfo(popup_container, puzzleData, width, height, colorSc
     textContainer.append('p').text(getPuzzleSummary(puzzleData))
 
   
-    layoutHighScoreBarChart(plot_container, puzzleData, 'name', 'time', width/2-10, Math.min(height, width/2))
-    layoutCircleData(plot_container,  puzzleData, width/2,  Math.min(height, width/2), colorScale)
+    layoutHighScoreBarChart(plot_container, puzzleData, 'name','time', width-50, Math.min(height, width/2))
+    
+    // layoutHighScoreBarChart(plot_container, flattened_day_data, 'name','best_time', width-50, Math.min(height, width/2))
+    layoutCircleData(plot_container,  puzzleData,  width-50,  Math.min(height, width/2), colorScale)
     
 
 }

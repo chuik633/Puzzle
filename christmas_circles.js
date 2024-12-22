@@ -36,7 +36,7 @@ function christmas_circles(data, container, plot_width, plot_height){//data has 
         .domain([minY-2, maxY+2])
         .range([plot_height - padding.bottom, padding.top]);
 
-   console.log(allXValues, allYValues)
+
 
    const img_size = 50
     const nodes = current_data.map(d=>({
@@ -48,7 +48,7 @@ function christmas_circles(data, container, plot_width, plot_height){//data has 
         targety:yScale(d.average_time)
     }))
 
-    console.log("NODES", nodes)
+
 
     const node = plot_container.selectAll('img')
         .data(nodes)
@@ -59,10 +59,7 @@ function christmas_circles(data, container, plot_width, plot_height){//data has 
                         .style("top", d=>d.y+"px")
                         .style("width", d=>d.size+"px") 
                         .attr("src",d=> `./assets/puzzles/AdventCalendar3 ${d.day}.png`)
-                        // .call(d3.drag()  
-                        //     .on('drag', dragMove)
-                        //     .on('end', dragEnd)
-                        // )
+              
                         .on('mouseover', (event,d)=>{
                             tooltip
                             .style('display', 'flex')
@@ -259,8 +256,7 @@ function christmas_circles_faces(flattened_data, container, plot_width, plot_hei
         .range([plot_height - padding.bottom, padding.top]);
 
 
-    console.log("XSCALE", xScale(Math.min(...allXValues)))
-    console.log(yScale(minY))
+
    const img_size = 50
     const nodes = person_time_data.map(d=>({
         ...d,
@@ -285,10 +281,10 @@ function christmas_circles_faces(flattened_data, container, plot_width, plot_hei
                         .style('border', d=> ".8px solid black")
                         .style('border-radius', '50%')
 
-                        .call(d3.drag()  
-                            .on('drag', dragMove)
-                            .on('end', dragEnd)
-                        )
+                        // .call(d3.drag()  
+                        //     .on('drag', dragMove)
+                        //     .on('end', dragEnd)
+                        // )
                         .on('mouseover', (event,d)=>{
                             tooltip
                             .style('display', 'flex')

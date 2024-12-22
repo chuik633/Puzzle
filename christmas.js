@@ -9,23 +9,44 @@ let day_data=[]
 let advent_puzzler_names;
 let highlight_container;
 let popup_container;
+let all_attempt_data;
 
+let app = d3.select('#app')
+let header_container = app.append('div').attr('class', 'advent-header')
+let form_container =  app.append('div').attr('class', 'advent-options-container')
+let plot_container = app.append('div').attr('class', 'plot-container')
+let width = window.innerWidth
+let height = window.innerHeight
 
 
 function driver_christmasPuzzles(data){
     app.attr('class', 'advent')
     flattened_day_data=[]
+    all_attempt_data=[]
     
     day_data = data.map(d=>{
         let day_entry =  {
             day: parseInt(d.Day),
             all_times:[],
-            fastest:{name:"",time:Infinity }
+            fastest:{name:"",time:Infinity },
+            fastest_overall:{name:"",time:Infinity }
         }
-        for(const [name, time] of Object.entries(d)){
+        for(let [name, times_list_raw] of Object.entries(d)){
             if(name != "Day"){
                 try{
-                    const [min, sec] = time.split(":");
+                    let all_attempt_times = []
+                    times_list_raw = times_list_raw.split(',')
+                    for(const time_raw of times_list_raw){
+                        const [min, sec] = time_raw.split(":");
+                        let parsedTime = parseInt(min)+ parseInt(sec)/60
+                        parsedTime = Math.round(parsedTime * 100) / 100;
+                        if(!isNaN(parsedTime)){
+                            all_attempt_times.push(parsedTime)
+                        }
+                    }
+
+                    const firstAtteptTime = times_list_raw[0]
+                    const [min, sec] = firstAtteptTime.split(":");
                     let parsedTime = parseInt(min)+ parseInt(sec)/60
                     parsedTime= Math.round(parsedTime * 100) / 100;
                     day_entry[name] = parsedTime
@@ -33,11 +54,15 @@ function driver_christmasPuzzles(data){
                         continue;
                     }
                     day_entry.all_times.push(parsedTime)
+                    const best_time = Math.min(...all_attempt_times)
+
                     flattened_day_data.push(
                         {
                             day:parseInt(d.Day),
                             name:name,
-                            time:parsedTime
+                            time:parsedTime,
+                            all_attempt_times :all_attempt_times,
+                            best_time: best_time
 
                         }
                     )
@@ -46,8 +71,12 @@ function driver_christmasPuzzles(data){
                         day_entry["fastest"]["time"]=parsedTime
                         day_entry["fastest"]["name"]=name
                     }
+                    if(best_time < day_entry["fastest_overall"]["time"]){
+                        day_entry["fastest_overall"]["time"]=best_time
+                        day_entry["fastest_overall"]["name"]=name
+                    }
                 }catch (e){
-                    console.log("err", e)
+                    // console.log("err", e)
                     continue
                 }
             }
@@ -59,8 +88,8 @@ function driver_christmasPuzzles(data){
         return day_entry
         
     })
-   
-    console.log(day_data)
+    console.log("FLATTENED DATA", flattened_day_data)
+    console.log("DAY_DATA", day_data)
     advent_puzzler_names = Array.from(Object.keys(data[0]).slice(1,))
     layout_header()
     layout_legend()
@@ -97,7 +126,6 @@ function set_view_mode(selectedMode){
 }
 
 function layout_header(){
-    const header_container = app.append('div').attr('class', 'advent-header')
     const small_info = header_container.append('div').attr('class', 'header-small-font')
     small_info.append('h5').text("December 2024")
     small_info.append('h3').text("THE")
@@ -106,7 +134,7 @@ function layout_header(){
     header_container.append('h4').text("NYT PUZZLE COMPANY")
 
     const viewOptions = ['difficulty', 'leaderboard']
-    const radioParams = header_container.append('form').attr('id', 'view-options')
+    const radioParams = form_container.append('form').attr('id', 'view-options')
 
     for (const viewOption of viewOptions) {
         const option = radioParams.append('label').attr('class', 'radio-custom');
@@ -117,6 +145,7 @@ function layout_header(){
     
         if (viewOption === viewOptions[0]) {
             optionInput.attr('checked', true);
+            // option.style('background-color', 'black')
         }
     
         optionInput.on('change', function () {
@@ -124,10 +153,31 @@ function layout_header(){
             set_view_mode(selected_option);
         });
 
-        option.append('span').attr('class', 'radio-button');
+        // option.append('span').attr('class', 'radio-button');
         option.append('div').attr('class', 'radio-value').text(viewOption);
     }
 
+    const timeOptions = ['first-attempt', 'best-attempt']
+    const radioTimeOptions = form_container.append('form').attr('id', 'time-options')
+    for(const timeOption of timeOptions){
+        const option = radioTimeOptions.append('label').attr('class', 'radio-custom');
+        const optionInput = option.append('input')
+            .attr('type', 'radio')
+            .attr('name', 'time-option')
+            .attr('value', timeOption);
+        if (timeOption === timeOptions[0]) {
+            optionInput.attr('checked', true);
+        }
+        optionInput.on('change', function () {
+            const selected_option = d3.select(this).property('value');
+            set_time_mode(selected_option);
+        });
+
+        option.append('span').attr('class', 'radio-button');
+        option.append('div').attr('class', 'radio-value').text(timeOption);
+
+    }
+    
     
 
 }
@@ -140,6 +190,7 @@ function layout_legend(){
         legend.attr('class', 'legend-container side')
 
     }
+
     legend.selectAll('div')
         .data(advent_puzzler_names)
         .enter().append('div')
@@ -308,7 +359,7 @@ function layout_puzzle_difficulty(data){
             popup_container.style('display', 'flex')
             const puzzleData = flattened_day_data.filter(d2=>d2.day == d.day)
 
-            layoutPuzzleDayInfo(popup_container,puzzleData, width, height, personColorScale)
+            layoutPuzzleDayInfo(popup_container,puzzleData, flattened_day_data,width, height, personColorScale)
 
         
         })
@@ -356,8 +407,10 @@ function layout_puzzle_leaderboard(data){
         .style('left', d => `${dayScale(d)[0]}px`) 
         .style('top', d => `${dayScale(d)[1] + 10}px`); 
 
-  
-
+    let time_mode_field = 'fastest'
+    if(time_mode == 'best_time'){
+        time_mode_field='fastest_overall'
+    }
     const faceblocks = svg_div.selectAll('div.face')
         .data(data)
         .enter()
@@ -367,7 +420,7 @@ function layout_puzzle_leaderboard(data){
                 return;
             }
             else{
-                return 'face face-' + d.fastest.name}})
+                return 'face face-' + d[time_mode_field].name}})
         .style('width', calSize + 'px')
         .style('height', calSize + 'px')
         .style('position', 'absolute')
@@ -377,7 +430,7 @@ function layout_puzzle_leaderboard(data){
             if (d.average_time == undefined) {
                 return "#F7F7F0";
             }
-            return personColorScale(d.fastest.name);
+            return personColorScale(d[time_mode_field].name);
         })
         .style("border", ".5px solid black")
         .style('border-radius', '5px')

@@ -6,6 +6,7 @@ function personStats(popup_container, flattened_data, name,personColorScale){
     })
     const person_data = flattened_data.filter(d=>d.name == name)
     const sorted_data = person_data.sort((a, b) => b.time - a.time).reverse();
+    const sortedDataBest = person_data.sort((a, b) => b.best_time - a.best_time).reverse();
     const fastest_entry = sorted_data[0]
     const slowest_entry = sorted_data[sorted_data.length-1]
     //card info
@@ -30,9 +31,15 @@ function personStats(popup_container, flattened_data, name,personColorScale){
       
     const text_col2 = row2.append('div').attr('class', 'flex-col')
     text_col2.append('h3').text('BEST PUZZLE')
-    text_col2.append('p').text(`${name}'s best puzzle is December ${fastest_entry.day} which they completed in ${Math.floor(fastest_entry.time)} min 
-            and ${Math.floor(60*(fastest_entry.time-Math.floor(fastest_entry.time)))} seconds!`)
+    let summary_text =`${name}'s best puzzle is December ${fastest_entry.day} which they completed in ${Math.floor(fastest_entry.time)} min 
+            and ${Math.floor(60*(fastest_entry.time-Math.floor(fastest_entry.time)))} seconds!`
 
+    if(sortedDataBest[0].all_attempt_times.length > 1){
+        summary_text+=` Their best overall time (not necesarily the first attempt) is on
+        Day ${sortedDataBest[0].day} where they took ${sortedDataBest[0].best_time} minutes. Over ${sortedDataBest[0].all_attempt_times.length} attempts, ${sorted_data[0].name} improved by 
+        ${Math.round(10*(sortedDataBest[0].time-sortedDataBest[0].best_time))/10}   `
+    }
+    text_col2.append('p').text(summary_text)
 
     
     row2.append('img')
@@ -53,7 +60,10 @@ function personStats(popup_container, flattened_data, name,personColorScale){
     const plot_width = Math.min(window.innerWidth*.9 - 60, 600 - 60)
     const plot_height = Math.max(plot_width/4,150)
     const row3 = card.append('div').attr('class', 'flex-row')
-    line_plot_all(row3,`${name}'s times` ,flattened_data,name, 'day', 'time', plot_width, plot_height,personColorScale)
+
+    line_plot_all(row3,`${name}'s times` ,flattened_data,name, 'day', time_mode, plot_width, plot_height,personColorScale)
+    
+   
 
     const row4 = card.append('div').attr('class', 'flex-row')
 
