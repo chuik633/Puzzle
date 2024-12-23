@@ -5,7 +5,7 @@ function layoutHighScoreBarChart(plot_container, barChartData, xCategory, yCateg
         .attr('width', width)
         .attr("height", height)
 
-    // svg.append('text').text(title).attr('class', 'barchart-title').attr('stroke', 'none').attr('y', 15)
+    svg.append('text').text('First Attempt Leaderboard').attr('class', 'plot-title').attr('stroke', 'none').attr('y', 15)
 
     const xScale = d3.scaleBand()
         .domain(barChartData.map(d => d[xCategory]))
@@ -211,12 +211,95 @@ function layoutPuzzleDayInfo(popup_container, puzzleData,flattened_day_data, wid
     textContainer.append('h2').text(`December ${day}th`).attr('class', 'barchart-title');
     textContainer.append('p').text(getPuzzleSummary(puzzleData))
 
-  
+   
     layoutHighScoreBarChart(plot_container, puzzleData, 'name','time', width-50, Math.min(height, width/2))
-    
     // layoutHighScoreBarChart(plot_container, flattened_day_data, 'name','best_time', width-50, Math.min(height, width/2))
     layoutCircleData(plot_container,  puzzleData,  width-50,  Math.min(height, width/2), colorScale)
-    
+
+
+
+    layoutSinglePuzzleAttempts(day, flattened_day_data, plot_container, width-50, Math.min(height, width/2),colorScale)
 
 }
+
+function layoutSinglePuzzleAttempts(day, flattened_day_data,plot_container, width, height, personColorScale){
+    const container = plot_container.append('div').attr('class', 'svg-container')
+    const groupped_data = d3.rollup(flattened_day_data.filter(d=>d.time!=undefined && !isNaN(d.time)), v=>v, d=>d.day)
+    const puzzleData = Array.from(groupped_data.get(day))
+    const padding = 20
+    const transformedDataset = puzzleData.flatMap(d =>
+        d.all_attempt_times.map((time, index) => ({
+            name:d.name,
+            day:d.day,
+          time: time, 
+          attempt_num: index + 1, 
+        }))
+      );
+    const userPuzzleData = d3.rollup(transformedDataset,
+        v=>v,
+        d=>d.name
+    )
+      
+   
+    const svg = container.append('svg')
+        .attr('width', width)
+        .attr("height", height)
+        .attr('viewBox', [0,0,width,height])
+
+    svg.append('text').text("All Attempts").attr('class', 'plot-title').attr('y', 20).attr('x', width/2).attr('text-anchor', 'middle')
+    const max_attempts = d3.max(puzzleData.map(d=> d.all_attempt_times.length))
+    const max_time = d3.max(transformedDataset.map(d => d.time));
+    const timeScale = d3.scaleLinear().domain([5, max_time]).range([height-padding, padding])    
+    const attemptScale = d3.scaleLinear().domain([1,max_attempts]).range([20, width-10]) 
+
+    const line = d3.line()
+        .x((d) => attemptScale(d.attempt_num))
+        .y((d) => timeScale(d.time));
+
+    svg.selectAll('path')
+        .data(userPuzzleData).enter()
+        .append('path')
+        .attr('class', d=>`${d[1][0].puzzle_name_id} ${d[0]} ${d[1][0].puzzle_name_id}-${d[0]}`)
+        .attr("fill", "none")
+        .attr("stroke", d=> personColorScale(d[0]))
+        .attr("stroke-width", 1.5)
+        .attr("d", d=> {
+            console.log(d)
+            return line(d[1])
+        })
+        .on('mouseover', (event,d)=>{
+            d3.selectAll('.face').style('background','none').style('border', 'none')
+            d3.select('.face-'+d.puzzler_name).style('background',personColorScale(d.puzzler_name)).style('border', '1px solid #2225D8')
+            d3.selectAll(`.${d[1][0].puzzle_name_id}`).style('opacity', .3)
+            d3.selectAll(`.${d[1][0].puzzle_name_id}-${d[0]}`).style('opacity', 1)
+        })
+        .on('mouseleave', (event,d)=>{
+            d3.selectAll(`.${d[1][0].puzzle_name_id}`).style('opacity', 1)
+        })
+    svg.selectAll('circle')
+        .data(transformedDataset).enter()
+        .append('circle')
+        .attr('class', d=>`${d.puzzle_name_id} ${d.puzzler_name} ${d.puzzle_name_id}-${d.puzzler_name}`)
+        .attr("fill", d=> personColorScale(d.name))
+        .attr("cx", d=> attemptScale(d.attempt_num))
+        .attr("cy", d=> timeScale(d.time))
+        .attr('r', 2)
+        .on('mouseover', (event,d)=>{
+            d3.selectAll('.face').style('background','none').style('border', 'none')
+            d3.select('.face-'+d.puzzler_name).style('background',personColorScale(d.puzzler_name)).style('border', '1px solid #2225D8')
+            d3.selectAll(`.${d.puzzle_name_id}`).style('opacity', .3)
+            d3.selectAll(`.${d.puzzle_name_id}-${d.puzzler_name}`).style('opacity', 1)
+        })
+        .on('mouseleave', (event,d)=>{
+            d3.selectAll(`.${d.puzzle_name_id}`).style('opacity', 1)
+        })
+        svg.append("g").attr('transform', `translate(${20},0)`)
+        .call(d3.axisLeft(timeScale).ticks(5))   
+        svg.append("g").attr('transform', `translate(0,${ height-padding})`)
+            .call(d3.axisBottom(attemptScale).ticks(max_attempts))   
+       
+
+}
+
+
 

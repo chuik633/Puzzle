@@ -118,7 +118,7 @@ body{
     flex-direction: column;
     width: 100vw;
     background-color: #F7F7F0;
-    border-bottom: .8px solid black;
+    /* border-bottom: .8px solid black; */
     z-index: 20;
 }
 
@@ -200,7 +200,16 @@ body{
     flex-direction: row;
     gap: 0px;
     position: relative;
+    flex-shrink: 0;
 
+}
+
+.plot-title{
+    font-size: 12px;
+
+    stroke: none;
+    font-weight: 100;
+    width: fit-content;
 }
 
 .round{
@@ -247,8 +256,9 @@ body{
     width: fit-content;
     max-width:600px;
     height: fit-content;
-    max-height: 80vh;
+    max-height: 60vh;
     overflow-y: auto; 
+    margin-bottom: 100px;
 
     scrollbar-width: none;
 }
@@ -297,10 +307,12 @@ body{
 
 }
 
-.advent .legend-container{
-    position: fixed;
+ .legend-container{
+    position: absolute;
     background-color: #F7F7F0;
     bottom: 0px;
+    height: fit-content;
+    z-index: 30;
 
     width: 100vw;
     gap: 0px;
@@ -312,7 +324,7 @@ body{
     scrollbar-width: none;
 }
 
-.advent .legend-container.side{
+.legend-container.side{
     width: fit-content;
     overflow-x:hidden;
     overflow-y:auto;

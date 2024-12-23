@@ -9,3 +9,9 @@ function set_time_mode(mode){
     }
    
 }
+
+let people_data = []
+
+function set_people_data(people_data){
+    people_data=people_data
+}

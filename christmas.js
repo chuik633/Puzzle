@@ -117,8 +117,10 @@ function set_view_mode(selectedMode){
     }
     plot_container.selectAll("*").remove()
     if(selectedMode == "difficulty"){
+        form_container.select(':scope > :last-child').remove()
         layout_puzzle_difficulty(day_data)
     }else{
+        show_time_options()
         layout_puzzle_leaderboard(day_data)
         showFaces(advent_puzzler_names)
     }
@@ -157,6 +159,10 @@ function layout_header(){
         option.append('div').attr('class', 'radio-value').text(viewOption);
     }
 
+    
+    
+}
+function show_time_options(){
     const timeOptions = ['first-attempt', 'best-attempt']
     const radioTimeOptions = form_container.append('form').attr('id', 'time-options')
     for(const timeOption of timeOptions){
@@ -171,25 +177,28 @@ function layout_header(){
         optionInput.on('change', function () {
             const selected_option = d3.select(this).property('value');
             set_time_mode(selected_option);
+            time_mode = selected_option
+            layout_puzzle_leaderboard(day_data)
         });
 
         option.append('span').attr('class', 'radio-button');
         option.append('div').attr('class', 'radio-value').text(timeOption);
 
     }
-    
-    
 
 }
+
+
+
 
 function layout_legend(){
      popup_container = app.append('div').attr('class', "popup-container").style('display', 'none')
     const legendSize = 20
-    const legend = app.append('div').attr('class', 'legend-container')
-    if(window.innerWidth > 800){
-        legend.attr('class', 'legend-container side')
+    const legend = d3.select("body").append('div').attr('class', 'legend-container')
+    // if(window.innerWidth > 800){
+    //     legend.attr('class', 'legend-container side')
 
-    }
+    // }
 
     legend.selectAll('div')
         .data(advent_puzzler_names)
@@ -378,6 +387,7 @@ function layout_puzzle_difficulty(data){
 }
 
 function layout_puzzle_leaderboard(data){  
+    plot_container.selectAll("*").remove()
     const calSize = calWidth/7
     function dayScale(day){
         const col_num = Math.floor((day-1)/7)
@@ -407,9 +417,12 @@ function layout_puzzle_leaderboard(data){
         .style('left', d => `${dayScale(d)[0]}px`) 
         .style('top', d => `${dayScale(d)[1] + 10}px`); 
 
+    console.log("timemode", time_mode)
     let time_mode_field = 'fastest'
-    if(time_mode == 'best_time'){
+    if(time_mode == 'best-attempt'){
         time_mode_field='fastest_overall'
+    }else{
+         time_mode_field = 'fastest'
     }
     const faceblocks = svg_div.selectAll('div.face')
         .data(data)
@@ -430,6 +443,7 @@ function layout_puzzle_leaderboard(data){
             if (d.average_time == undefined) {
                 return "#F7F7F0";
             }
+            // console.log(time_mode, d[time_mode_field].name, time_mode_field, d)
             return personColorScale(d[time_mode_field].name);
         })
         .style("border", ".5px solid black")

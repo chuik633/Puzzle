@@ -42,6 +42,12 @@ background-color: black;
 
 
 }
+#time-options label.radio-custom {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: fit-content;
+ }
 
 
 #view-options{
