@@ -258,6 +258,7 @@ body{
     height: fit-content;
     max-height: 60vh;
     overflow-y: auto; 
+    overflow-x: hidden;
     margin-bottom: 100px;
 
     scrollbar-width: none;
