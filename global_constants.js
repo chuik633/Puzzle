@@ -7,6 +7,7 @@ function set_time_mode(mode){
     }else{
         time_mode = mode
     }
+    console.log('time mode', time_mode)
    
 }
 
@@ -15,3 +16,4 @@ let people_data = []
 function set_people_data(people_data){
     people_data=people_data
 }
+

@@ -309,7 +309,7 @@ body{
 }
 
  .legend-container{
-    position: absolute;
+    position: fixed;
     background-color: #F7F7F0;
     bottom: 0px;
     height: fit-content;
